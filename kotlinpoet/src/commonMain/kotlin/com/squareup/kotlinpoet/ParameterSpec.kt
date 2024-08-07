@@ -18,11 +18,10 @@ package com.squareup.kotlinpoet
 import com.squareup.kotlinpoet.KModifier.CROSSINLINE
 import com.squareup.kotlinpoet.KModifier.NOINLINE
 import com.squareup.kotlinpoet.KModifier.VARARG
-import java.lang.reflect.Type
-import javax.lang.model.element.ExecutableElement
-import javax.lang.model.element.Modifier
-import javax.lang.model.element.VariableElement
+import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.JvmModifier
 import kotlin.DeprecationLevel.ERROR
+import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
 
 /** A generated parameter declaration. */
@@ -73,7 +72,7 @@ public class ParameterSpec private constructor(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false
-    if (javaClass != other.javaClass) return false
+    if (this::class != other::class) return false
     return toString() == other.toString()
   }
 
@@ -115,7 +114,7 @@ public class ParameterSpec private constructor(
       ReplaceWith(""),
       level = ERROR,
     )
-    public fun jvmModifiers(@Suppress("UNUSED_PARAMETER", "unused") modifiers: Iterable<Modifier>): Builder = apply {
+    public fun jvmModifiers(@Suppress("UNUSED_PARAMETER", "unused") modifiers: Iterable<JvmModifier>): Builder = apply {
       throw IllegalArgumentException("JVM modifiers are not permitted on parameters in Kotlin")
     }
 
@@ -141,7 +140,7 @@ public class ParameterSpec private constructor(
       message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
         "using the kotlinpoet-metadata APIs instead.",
     )
-    override fun addAnnotation(annotation: Class<*>): Builder = super.addAnnotation(annotation)
+    override fun addAnnotation(annotation: JvmClass<*>): Builder = super.addAnnotation(annotation)
 
     @Suppress("RedundantOverride")
     override fun addAnnotation(annotation: KClass<*>): Builder = super.addAnnotation(annotation)
@@ -157,25 +156,27 @@ public class ParameterSpec private constructor(
   }
 
   public companion object {
-    @DelicateKotlinPoetApi(
-      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-        " the kotlinpoet-metadata APIs instead.",
-    )
-    @JvmStatic
-    public fun get(element: VariableElement): ParameterSpec {
-      val name = element.simpleName.toString()
-      val type = element.asType().asTypeName()
-      return builder(name, type)
-        .build()
-    }
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+    //     " the kotlinpoet-metadata APIs instead.",
+    // )
+    // @JvmStatic
+    // public fun get(element: VariableElement): ParameterSpec {
+    //   val name = element.simpleName.toString()
+    //   val type = element.asType().asTypeName()
+    //   return builder(name, type)
+    //     .build()
+    // }
 
-    @DelicateKotlinPoetApi(
-      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-        " the kotlinpoet-metadata APIs instead.",
-    )
-    @JvmStatic
-    public fun parametersOf(method: ExecutableElement): List<ParameterSpec> =
-      method.parameters.map(::get)
+    // TODO Jvm Types
+    // @DelicateKotlinPoetApi(
+    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+    //     " the kotlinpoet-metadata APIs instead.",
+    // )
+    // @JvmStatic
+    // public fun parametersOf(method: JvmExecutableElement): List<ParameterSpec> =
+    //   method.parameters.map(::get)
 
     @JvmStatic public fun builder(
       name: String,
@@ -185,8 +186,9 @@ public class ParameterSpec private constructor(
       return Builder(name, type).addModifiers(*modifiers)
     }
 
-    @JvmStatic public fun builder(name: String, type: Type, vararg modifiers: KModifier): Builder =
-      builder(name, type.asTypeName(), *modifiers)
+    // TODO Jvm Type
+    // @JvmStatic public fun builder(name: String, type: Type, vararg modifiers: KModifier): Builder =
+    //   builder(name, type.asTypeName(), *modifiers)
 
     @JvmStatic public fun builder(
       name: String,
@@ -202,11 +204,12 @@ public class ParameterSpec private constructor(
       return Builder(name, type).addModifiers(modifiers)
     }
 
-    @JvmStatic public fun builder(
-      name: String,
-      type: Type,
-      modifiers: Iterable<KModifier>,
-    ): Builder = builder(name, type.asTypeName(), modifiers)
+    // TODO Jvm Type
+    // @JvmStatic public fun builder(
+    //   name: String,
+    //   type: Type,
+    //   modifiers: Iterable<KModifier>,
+    // ): Builder = builder(name, type.asTypeName(), modifiers)
 
     @JvmStatic public fun builder(
       name: String,
@@ -216,7 +219,8 @@ public class ParameterSpec private constructor(
 
     @JvmStatic public fun unnamed(type: KClass<*>): ParameterSpec = unnamed(type.asTypeName())
 
-    @JvmStatic public fun unnamed(type: Type): ParameterSpec = unnamed(type.asTypeName())
+    // TODO Jvm Type
+    // @JvmStatic public fun unnamed(type: Type): ParameterSpec = unnamed(type.asTypeName())
 
     @JvmStatic public fun unnamed(type: TypeName): ParameterSpec = Builder("", type).build()
   }

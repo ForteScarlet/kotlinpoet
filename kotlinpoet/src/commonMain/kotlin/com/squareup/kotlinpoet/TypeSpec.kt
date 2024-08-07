@@ -29,9 +29,11 @@ import com.squareup.kotlinpoet.KModifier.PROTECTED
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.KModifier.SEALED
 import com.squareup.kotlinpoet.KModifier.VALUE
-import java.lang.reflect.Type
-import javax.lang.model.element.Element
+import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.JvmElement
 import kotlin.DeprecationLevel.ERROR
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
 
 /** A generated class, interface, or enum declaration. */
@@ -422,7 +424,7 @@ public class TypeSpec private constructor(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false
-    if (javaClass != other.javaClass) return false
+    if (this::class != other::class) return false
     return toString() == other.toString()
   }
 
@@ -494,7 +496,7 @@ public class TypeSpec private constructor(
 
     override val tags: MutableMap<KClass<*>, Any> = mutableMapOf()
     override val kdoc: CodeBlock.Builder = CodeBlock.builder()
-    override val originatingElements: MutableList<Element> = mutableListOf()
+    override val originatingElements: MutableList<JvmElement> = mutableListOf()
     override val annotations: MutableList<AnnotationSpec> = mutableListOf()
 
     @ExperimentalKotlinPoetApi
@@ -578,11 +580,12 @@ public class TypeSpec private constructor(
       }
     }
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    public fun superclass(superclass: Type): Builder = superclass(superclass.asTypeName())
+    // TODO java Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // public fun superclass(superclass: Type): Builder = superclass(superclass.asTypeName())
 
     public fun superclass(superclass: KClass<*>): Builder = superclass(superclass.asTypeName())
 
@@ -623,14 +626,15 @@ public class TypeSpec private constructor(
       }
     }
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    public fun addSuperinterface(
-      superinterface: Type,
-      delegate: CodeBlock = CodeBlock.EMPTY,
-    ): Builder = addSuperinterface(superinterface.asTypeName(), delegate)
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // public fun addSuperinterface(
+    //   superinterface: Type,
+    //   delegate: CodeBlock = CodeBlock.EMPTY,
+    // ): Builder = addSuperinterface(superinterface.asTypeName(), delegate)
 
     public fun addSuperinterface(
       superinterface: KClass<*>,
@@ -656,7 +660,8 @@ public class TypeSpec private constructor(
       addSuperinterface(superinterface, CodeBlock.of(constructorParameter))
     }
 
-    @JvmOverloads public fun addEnumConstant(
+    @JvmOverloads
+    public fun addEnumConstant(
       name: String,
       typeSpec: TypeSpec = anonymousClassBuilder().build(),
     ): Builder = apply {
@@ -725,7 +730,7 @@ public class TypeSpec private constructor(
       message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
         "using the kotlinpoet-metadata APIs instead.",
     )
-    override fun addAnnotation(annotation: Class<*>): Builder = super.addAnnotation(annotation)
+    override fun addAnnotation(annotation: JvmClass<*>): Builder = super.addAnnotation(annotation)
 
     @Suppress("RedundantOverride")
     override fun addAnnotation(annotation: KClass<*>): Builder = super.addAnnotation(annotation)
@@ -747,12 +752,13 @@ public class TypeSpec private constructor(
     override fun addProperty(name: String, type: TypeName, vararg modifiers: KModifier): Builder =
       super.addProperty(name, type, *modifiers)
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    override fun addProperty(name: String, type: Type, vararg modifiers: KModifier): Builder =
-      super.addProperty(name, type, *modifiers)
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // override fun addProperty(name: String, type: Type, vararg modifiers: KModifier): Builder =
+    //   super.addProperty(name, type, *modifiers)
 
     @Suppress("RedundantOverride")
     override fun addProperty(name: String, type: KClass<*>, vararg modifiers: KModifier): Builder =
@@ -762,12 +768,13 @@ public class TypeSpec private constructor(
     override fun addProperty(name: String, type: TypeName, modifiers: Iterable<KModifier>): Builder =
       super.addProperty(name, type, modifiers)
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    override fun addProperty(name: String, type: Type, modifiers: Iterable<KModifier>): Builder =
-      super.addProperty(name, type, modifiers)
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // override fun addProperty(name: String, type: Type, modifiers: Iterable<KModifier>): Builder =
+    //   super.addProperty(name, type, modifiers)
 
     @Suppress("RedundantOverride")
     override fun addProperty(name: String, type: KClass<*>, modifiers: Iterable<KModifier>): Builder =
@@ -895,9 +902,11 @@ public class TypeSpec private constructor(
   }
 
   public companion object {
-    @JvmStatic public fun classBuilder(name: String): Builder = Builder(Kind.CLASS, name)
+    @JvmStatic
+    public fun classBuilder(name: String): Builder = Builder(Kind.CLASS, name)
 
-    @JvmStatic public fun classBuilder(className: ClassName): Builder = classBuilder(className.simpleName)
+    @JvmStatic
+    public fun classBuilder(className: ClassName): Builder = classBuilder(className.simpleName)
 
     @Deprecated(
       "Use classBuilder() instead. This function will be removed in KotlinPoet 2.0.",
@@ -920,36 +929,48 @@ public class TypeSpec private constructor(
     @JvmStatic
     public fun valueClassBuilder(name: String): Builder = Builder(Kind.CLASS, name, VALUE)
 
-    @JvmStatic public fun objectBuilder(name: String): Builder = Builder(Kind.OBJECT, name)
+    @JvmStatic
+    public fun objectBuilder(name: String): Builder = Builder(Kind.OBJECT, name)
 
-    @JvmStatic public fun objectBuilder(className: ClassName): Builder = objectBuilder(className.simpleName)
+    @JvmStatic
+    public fun objectBuilder(className: ClassName): Builder = objectBuilder(className.simpleName)
 
-    @JvmStatic @JvmOverloads
+    @JvmStatic
+    @JvmOverloads
     public fun companionObjectBuilder(name: String? = null): Builder =
       Builder(Kind.OBJECT, name, COMPANION)
 
-    @JvmStatic public fun interfaceBuilder(name: String): Builder = Builder(Kind.INTERFACE, name)
+    @JvmStatic
+    public fun interfaceBuilder(name: String): Builder = Builder(Kind.INTERFACE, name)
 
-    @JvmStatic public fun interfaceBuilder(className: ClassName): Builder =
+    @JvmStatic
+    public fun interfaceBuilder(className: ClassName): Builder =
       interfaceBuilder(className.simpleName)
 
-    @JvmStatic public fun funInterfaceBuilder(name: String): Builder =
+    @JvmStatic
+    public fun funInterfaceBuilder(name: String): Builder =
       Builder(Kind.INTERFACE, name, FUN)
 
-    @JvmStatic public fun funInterfaceBuilder(className: ClassName): Builder =
+    @JvmStatic
+    public fun funInterfaceBuilder(className: ClassName): Builder =
       funInterfaceBuilder(className.simpleName)
 
-    @JvmStatic public fun enumBuilder(name: String): Builder = Builder(Kind.CLASS, name, ENUM)
+    @JvmStatic
+    public fun enumBuilder(name: String): Builder = Builder(Kind.CLASS, name, ENUM)
 
-    @JvmStatic public fun enumBuilder(className: ClassName): Builder =
+    @JvmStatic
+    public fun enumBuilder(className: ClassName): Builder =
       enumBuilder(className.simpleName)
 
-    @JvmStatic public fun anonymousClassBuilder(): Builder = Builder(Kind.CLASS, null)
+    @JvmStatic
+    public fun anonymousClassBuilder(): Builder = Builder(Kind.CLASS, null)
 
-    @JvmStatic public fun annotationBuilder(name: String): Builder =
+    @JvmStatic
+    public fun annotationBuilder(name: String): Builder =
       Builder(Kind.CLASS, name, ANNOTATION)
 
-    @JvmStatic public fun annotationBuilder(className: ClassName): Builder =
+    @JvmStatic
+    public fun annotationBuilder(className: ClassName): Builder =
       annotationBuilder(className.simpleName)
   }
 }

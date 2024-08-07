@@ -19,16 +19,13 @@ import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.EXPECT
 import com.squareup.kotlinpoet.KModifier.EXTERNAL
 import com.squareup.kotlinpoet.KModifier.INLINE
-import com.squareup.kotlinpoet.KModifier.VARARG
-import java.lang.reflect.Type
-import javax.lang.model.element.Element
-import javax.lang.model.element.ExecutableElement
-import javax.lang.model.element.Modifier
-import javax.lang.model.type.DeclaredType
-import javax.lang.model.type.ExecutableType
-import javax.lang.model.type.TypeVariable
-import javax.lang.model.util.Types
-import kotlin.DeprecationLevel.WARNING
+import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.JvmElement
+import com.squareup.kotlinpoet.jvm.JvmModifier
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.Strictfp
+import kotlin.jvm.Synchronized
 import kotlin.reflect.KClass
 
 /** A generated function declaration. */
@@ -265,7 +262,7 @@ public class FunSpec private constructor(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false
-    if (javaClass != other.javaClass) return false
+    if (this::class != other::class) return false
     return toString() == other.toString()
   }
 
@@ -321,7 +318,7 @@ public class FunSpec private constructor(
     public val typeVariables: MutableList<TypeVariableName> = mutableListOf()
     public val parameters: MutableList<ParameterSpec> = mutableListOf()
     override val tags: MutableMap<KClass<*>, Any> = mutableMapOf()
-    override val originatingElements: MutableList<Element> = mutableListOf()
+    override val originatingElements: MutableList<JvmElement> = mutableListOf()
 
     @ExperimentalKotlinPoetApi
     override val contextReceiverTypes: MutableList<TypeName> = mutableListOf()
@@ -334,20 +331,20 @@ public class FunSpec private constructor(
       this.modifiers += modifiers
     }
 
-    public fun jvmModifiers(modifiers: Iterable<Modifier>) {
+    public fun jvmModifiers(modifiers: Iterable<JvmModifier>) {
       var visibility = KModifier.INTERNAL
       for (modifier in modifiers) {
         when (modifier) {
-          Modifier.PUBLIC -> visibility = KModifier.PUBLIC
-          Modifier.PROTECTED -> visibility = KModifier.PROTECTED
-          Modifier.PRIVATE -> visibility = KModifier.PRIVATE
-          Modifier.ABSTRACT -> this.modifiers += KModifier.ABSTRACT
-          Modifier.FINAL -> this.modifiers += KModifier.FINAL
-          Modifier.NATIVE -> this.modifiers += KModifier.EXTERNAL
-          Modifier.DEFAULT -> Unit
-          Modifier.STATIC -> addAnnotation(JvmStatic::class)
-          Modifier.SYNCHRONIZED -> addAnnotation(Synchronized::class)
-          Modifier.STRICTFP -> addAnnotation(Strictfp::class)
+          JvmModifier.PUBLIC -> visibility = KModifier.PUBLIC
+          JvmModifier.PROTECTED -> visibility = KModifier.PROTECTED
+          JvmModifier.PRIVATE -> visibility = KModifier.PRIVATE
+          JvmModifier.ABSTRACT -> this.modifiers += ABSTRACT
+          JvmModifier.FINAL -> this.modifiers += KModifier.FINAL
+          JvmModifier.NATIVE -> this.modifiers += EXTERNAL
+          JvmModifier.DEFAULT -> Unit
+          JvmModifier.STATIC -> addAnnotation(JvmStatic::class)
+          JvmModifier.SYNCHRONIZED -> addAnnotation(Synchronized::class)
+          JvmModifier.STRICTFP -> addAnnotation(Strictfp::class)
           else -> throw IllegalArgumentException("unexpected fun modifier $modifier")
         }
       }
@@ -378,16 +375,18 @@ public class FunSpec private constructor(
       this.receiverKdoc = kdoc
     }
 
-    @JvmOverloads public fun receiver(
-      receiverType: Type,
-      kdoc: CodeBlock = CodeBlock.EMPTY,
-    ): Builder = receiver(receiverType.asTypeName(), kdoc)
+    // TODO JVM Type
+    // @JvmOverloads public fun receiver(
+    //   receiverType: Type,
+    //   kdoc: CodeBlock = CodeBlock.EMPTY,
+    // ): Builder = receiver(receiverType.asTypeName(), kdoc)
 
-    public fun receiver(
-      receiverType: Type,
-      kdoc: String,
-      vararg args: Any,
-    ): Builder = receiver(receiverType, CodeBlock.of(kdoc, args))
+    // TODO JVM Type
+    // public fun receiver(
+    //   receiverType: Type,
+    //   kdoc: String,
+    //   vararg args: Any,
+    // ): Builder = receiver(receiverType, CodeBlock.of(kdoc, args))
 
     @JvmOverloads public fun receiver(
       receiverType: KClass<*>,
@@ -409,11 +408,13 @@ public class FunSpec private constructor(
       this.returnKdoc = kdoc
     }
 
-    @JvmOverloads public fun returns(returnType: Type, kdoc: CodeBlock = CodeBlock.EMPTY): Builder =
-      returns(returnType.asTypeName(), kdoc)
+    // TODO JVM Type
+    // @JvmOverloads public fun returns(returnType: Type, kdoc: CodeBlock = CodeBlock.EMPTY): Builder =
+    //   returns(returnType.asTypeName(), kdoc)
 
-    public fun returns(returnType: Type, kdoc: String, vararg args: Any): Builder =
-      returns(returnType.asTypeName(), CodeBlock.of(kdoc, args))
+    // TODO JVM Type
+    // public fun returns(returnType: Type, kdoc: String, vararg args: Any): Builder =
+    //   returns(returnType.asTypeName(), CodeBlock.of(kdoc, args))
 
     @JvmOverloads public fun returns(
       returnType: KClass<*>,
@@ -474,8 +475,9 @@ public class FunSpec private constructor(
     public fun addParameter(name: String, type: TypeName, vararg modifiers: KModifier): Builder =
       addParameter(ParameterSpec.builder(name, type, *modifiers).build())
 
-    public fun addParameter(name: String, type: Type, vararg modifiers: KModifier): Builder =
-      addParameter(name, type.asTypeName(), *modifiers)
+    // TODO JVM Type
+    // public fun addParameter(name: String, type: Type, vararg modifiers: KModifier): Builder =
+    //   addParameter(name, type.asTypeName(), *modifiers)
 
     public fun addParameter(name: String, type: KClass<*>, vararg modifiers: KModifier): Builder =
       addParameter(name, type.asTypeName(), *modifiers)
@@ -483,8 +485,9 @@ public class FunSpec private constructor(
     public fun addParameter(name: String, type: TypeName, modifiers: Iterable<KModifier>): Builder =
       addParameter(ParameterSpec.builder(name, type, modifiers).build())
 
-    public fun addParameter(name: String, type: Type, modifiers: Iterable<KModifier>): Builder =
-      addParameter(name, type.asTypeName(), modifiers)
+    // TODO JVM Type
+    // public fun addParameter(name: String, type: Type, modifiers: Iterable<KModifier>): Builder =
+    //   addParameter(name, type.asTypeName(), modifiers)
 
     public fun addParameter(
       name: String,
@@ -551,7 +554,7 @@ public class FunSpec private constructor(
       message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
         "using the kotlinpoet-metadata APIs instead.",
     )
-    override fun addAnnotation(annotation: Class<*>): Builder = super.addAnnotation(annotation)
+    override fun addAnnotation(annotation: JvmClass<*>): Builder = super.addAnnotation(annotation)
 
     @Suppress("RedundantOverride")
     override fun addAnnotation(annotation: KClass<*>): Builder = super.addAnnotation(annotation)
@@ -595,83 +598,86 @@ public class FunSpec private constructor(
 
     @JvmStatic public fun setterBuilder(): Builder = Builder(SETTER)
 
-    @DelicateKotlinPoetApi(
-      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-        " the kotlinpoet-metadata APIs instead.",
-    )
-    @JvmStatic
-    public fun overriding(method: ExecutableElement): Builder {
-      var modifiers: Set<Modifier> = method.modifiers
-      require(
-        Modifier.PRIVATE !in modifiers &&
-          Modifier.FINAL !in modifiers &&
-          Modifier.STATIC !in modifiers,
-      ) {
-        "cannot override method with modifiers: $modifiers"
-      }
+    // TODO JVM Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+    //     " the kotlinpoet-metadata APIs instead.",
+    // )
+    // @JvmStatic
+    // public fun overriding(method: JvmExecutableElement): Builder {
+    //   var modifiers: Set<JvmModifier> = method.getModifiers()
+    //   require(
+    //       JvmModifier.PRIVATE !in modifiers &&
+    //       JvmModifier.FINAL !in modifiers &&
+    //       JvmModifier.STATIC !in modifiers,
+    //   ) {
+    //     "cannot override method with modifiers: $modifiers"
+    //   }
+    //
+    //   // TODO method.simpleName.toString()
+    //   val methodName = method.toString() // TODO method.simpleName.toString()
+    //   val funBuilder = builder(methodName)
+    //
+    //   funBuilder.addModifiers(KModifier.OVERRIDE)
+    //
+    //   modifiers = modifiers.toMutableSet()
+    //   modifiers.remove(JvmModifier.ABSTRACT)
+    //   funBuilder.jvmModifiers(modifiers)
+    //
+    //   method.typeParameters
+    //     .map { it.asType() as TypeVariable }
+    //     .map { it.asTypeVariableName() }
+    //     .forEach { funBuilder.addTypeVariable(it) }
+    //
+    //   funBuilder.returns(method.returnType.asTypeName())
+    //   funBuilder.addParameters(ParameterSpec.parametersOf(method))
+    //   if (method.isVarArgs) {
+    //     funBuilder.parameters[funBuilder.parameters.lastIndex] = funBuilder.parameters.last()
+    //       .toBuilder()
+    //       .addModifiers(VARARG)
+    //       .build()
+    //   }
+    //
+    //   if (method.thrownTypes.isNotEmpty()) {
+    //     val throwsValueString = method.thrownTypes.joinToString { "%T::class" }
+    //     funBuilder.addAnnotation(
+    //       AnnotationSpec.builder(Throws::class)
+    //         .addMember(throwsValueString, *method.thrownTypes.toTypedArray())
+    //         .build(),
+    //     )
+    //   }
+    //
+    //   return funBuilder
+    // }
 
-      val methodName = method.simpleName.toString()
-      val funBuilder = builder(methodName)
-
-      funBuilder.addModifiers(KModifier.OVERRIDE)
-
-      modifiers = modifiers.toMutableSet()
-      modifiers.remove(Modifier.ABSTRACT)
-      funBuilder.jvmModifiers(modifiers)
-
-      method.typeParameters
-        .map { it.asType() as TypeVariable }
-        .map { it.asTypeVariableName() }
-        .forEach { funBuilder.addTypeVariable(it) }
-
-      funBuilder.returns(method.returnType.asTypeName())
-      funBuilder.addParameters(ParameterSpec.parametersOf(method))
-      if (method.isVarArgs) {
-        funBuilder.parameters[funBuilder.parameters.lastIndex] = funBuilder.parameters.last()
-          .toBuilder()
-          .addModifiers(VARARG)
-          .build()
-      }
-
-      if (method.thrownTypes.isNotEmpty()) {
-        val throwsValueString = method.thrownTypes.joinToString { "%T::class" }
-        funBuilder.addAnnotation(
-          AnnotationSpec.builder(Throws::class)
-            .addMember(throwsValueString, *method.thrownTypes.toTypedArray())
-            .build(),
-        )
-      }
-
-      return funBuilder
-    }
-
-    @Deprecated(
-      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-        " the kotlinpoet-metadata APIs instead.",
-      level = WARNING,
-    )
-    @JvmStatic
-    public fun overriding(
-      method: ExecutableElement,
-      enclosing: DeclaredType,
-      types: Types,
-    ): Builder {
-      val executableType = types.asMemberOf(enclosing, method) as ExecutableType
-      val resolvedParameterTypes = executableType.parameterTypes
-      val resolvedReturnType = executableType.returnType
-
-      val builder = overriding(method)
-      builder.returns(resolvedReturnType.asTypeName())
-      var i = 0
-      val size = builder.parameters.size
-      while (i < size) {
-        val parameter = builder.parameters[i]
-        val type = resolvedParameterTypes[i].asTypeName()
-        builder.parameters[i] = parameter.toBuilder(parameter.name, type).build()
-        i++
-      }
-
-      return builder
-    }
+    // TODO JVM Type
+    // @Deprecated(
+    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+    //     " the kotlinpoet-metadata APIs instead.",
+    //   level = WARNING,
+    // )
+    // @JvmStatic
+    // public fun overriding(
+    //   method: ExecutableElement,
+    //   enclosing: DeclaredType,
+    //   types: Types,
+    // ): Builder {
+    //   val executableType = types.asMemberOf(enclosing, method) as ExecutableType
+    //   val resolvedParameterTypes = executableType.parameterTypes
+    //   val resolvedReturnType = executableType.returnType
+    //
+    //   val builder = overriding(method)
+    //   builder.returns(resolvedReturnType.asTypeName())
+    //   var i = 0
+    //   val size = builder.parameters.size
+    //   while (i < size) {
+    //     val parameter = builder.parameters[i]
+    //     val type = resolvedParameterTypes[i].asTypeName()
+    //     builder.parameters[i] = parameter.toBuilder(parameter.name, type).build()
+    //     i++
+    //   }
+    //
+    //   return builder
+    // }
   }
 }

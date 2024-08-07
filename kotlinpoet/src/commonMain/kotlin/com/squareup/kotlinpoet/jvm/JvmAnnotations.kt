@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:JvmName("JvmAnnotations")
+@file:JvmMultifileClass
 
 package com.squareup.kotlinpoet.jvm
 
@@ -27,7 +28,18 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
-import java.lang.reflect.Type
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmInline
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmRecord
+import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.jvm.JvmWildcard
+import kotlin.jvm.Strictfp
+import kotlin.jvm.Synchronized
+import kotlin.jvm.Transient
 import kotlin.reflect.KClass
 
 public fun FileSpec.Builder.jvmName(name: String): FileSpec.Builder = addAnnotation(

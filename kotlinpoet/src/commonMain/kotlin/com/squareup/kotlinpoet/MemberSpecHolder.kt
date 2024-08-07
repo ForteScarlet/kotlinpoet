@@ -15,7 +15,6 @@
  */
 package com.squareup.kotlinpoet
 
-import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
 /** A spec which can contain [PropertySpec]s and [FunSpec]s. */
@@ -34,12 +33,13 @@ public interface MemberSpecHolder {
     public fun addProperty(name: String, type: TypeName, vararg modifiers: KModifier): T =
       addProperty(PropertySpec.builder(name, type, *modifiers).build())
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    public fun addProperty(name: String, type: Type, vararg modifiers: KModifier): T =
-      addProperty(name, type.asTypeName(), *modifiers)
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // public fun addProperty(name: String, type: Type, vararg modifiers: KModifier): T =
+    //   addProperty(name, type.asTypeName(), *modifiers)
 
     public fun addProperty(name: String, type: KClass<*>, vararg modifiers: KModifier): T =
       addProperty(name, type.asTypeName(), *modifiers)
@@ -47,12 +47,13 @@ public interface MemberSpecHolder {
     public fun addProperty(name: String, type: TypeName, modifiers: Iterable<KModifier>): T =
       addProperty(PropertySpec.builder(name, type, modifiers).build())
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    public fun addProperty(name: String, type: Type, modifiers: Iterable<KModifier>): T =
-      addProperty(name, type.asTypeName(), modifiers)
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // public fun addProperty(name: String, type: Type, modifiers: Iterable<KModifier>): T =
+    //   addProperty(name, type.asTypeName(), modifiers)
 
     public fun addProperty(name: String, type: KClass<*>, modifiers: Iterable<KModifier>): T =
       addProperty(name, type.asTypeName(), modifiers)

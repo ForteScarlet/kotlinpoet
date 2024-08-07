@@ -37,19 +37,26 @@ kotlin {
     withJava()
   }
 
+  js {
+    browser()
+    nodejs()
+    binaries.library()
+  }
+
   @OptIn(ExperimentalKotlinGradlePluginApi::class)
   compilerOptions {
     allWarningsAsErrors.set(true)
     optIn.add("com.squareup.kotlinpoet.DelicateKotlinPoetApi")
+    freeCompilerArgs.add("-Xexpect-actual-classes")
   }
 
   sourceSets {
-    val commonMain by getting {
+    commonMain {
       dependencies {
         implementation(libs.kotlin.reflect)
       }
     }
-    val commonTest by getting {
+    jvmTest {
       dependencies {
         implementation(libs.kotlin.junit)
         implementation(libs.truth)

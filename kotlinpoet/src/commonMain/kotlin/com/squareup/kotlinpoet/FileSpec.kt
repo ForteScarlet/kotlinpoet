@@ -16,6 +16,7 @@
 package com.squareup.kotlinpoet
 
 import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.FILE
+import com.squareup.kotlinpoet.jvm.JvmClass
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
@@ -33,6 +34,9 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.isDirectory
 import kotlin.io.path.notExists
 import kotlin.io.path.outputStream
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
 
 /**
@@ -79,75 +83,81 @@ public class FileSpec private constructor(
     append(extension)
   }
 
-  @Throws(IOException::class)
-  public fun writeTo(out: Appendable) {
-    val codeWriter = CodeWriter.withCollectedImports(
-      out = out,
-      indent = indent,
-      memberImports = memberImports,
-      emitStep = { importsCollector -> emit(importsCollector, collectingImports = true) },
-    )
-    emit(codeWriter, collectingImports = false)
-    codeWriter.close()
-  }
+  // TODO JVM Path
+  // @Throws(IOException::class)
+  // public fun writeTo(out: Appendable) {
+  //   val codeWriter = CodeWriter.withCollectedImports(
+  //     out = out,
+  //     indent = indent,
+  //     memberImports = memberImports,
+  //     emitStep = { importsCollector -> emit(importsCollector, collectingImports = true) },
+  //   )
+  //   emit(codeWriter, collectingImports = false)
+  //   codeWriter.close()
+  // }
 
-  @Deprecated("", level = HIDDEN)
-  @JvmName("writeTo") // For binary compatibility.
-  public fun oldWriteTo(directory: Path) {
-    writeTo(directory)
-  }
+  // TODO JVM Path
+  // @Deprecated("", level = HIDDEN)
+  // @JvmName("writeTo") // For binary compatibility.
+  // public fun oldWriteTo(directory: Path) {
+  //   writeTo(directory)
+  // }
 
-  /**
-   * Writes this to [directory] as UTF-8 using the standard directory structure
-   * and returns the newly output path.
-   */
-  @Throws(IOException::class)
-  public fun writeTo(directory: Path): Path {
-    require(directory.notExists() || directory.isDirectory()) {
-      "path $directory exists but is not a directory."
-    }
-    val outputPath = directory.resolve(relativePath)
-    outputPath.parent.createDirectories()
-    outputPath.outputStream().bufferedWriter().use(::writeTo)
-    return outputPath
-  }
+  // TODO JVM Path
+  // /**
+  //  * Writes this to [directory] as UTF-8 using the standard directory structure
+  //  * and returns the newly output path.
+  //  */
+  // @Throws(IOException::class)
+  // public fun writeTo(directory: Path): Path {
+  //   require(directory.notExists() || directory.isDirectory()) {
+  //     "path $directory exists but is not a directory."
+  //   }
+  //   val outputPath = directory.resolve(relativePath)
+  //   outputPath.parent.createDirectories()
+  //   outputPath.outputStream().bufferedWriter().use(::writeTo)
+  //   return outputPath
+  // }
 
-  @Deprecated("", level = HIDDEN)
-  @JvmName("writeTo") // For binary compatibility.
-  public fun oldWriteTo(directory: File) {
-    writeTo(directory)
-  }
+  // TODO JVM Path
+  // @Deprecated("", level = HIDDEN)
+  // @JvmName("writeTo") // For binary compatibility.
+  // public fun oldWriteTo(directory: File) {
+  //   writeTo(directory)
+  // }
 
-  /**
-   * Writes this to [directory] as UTF-8 using the standard directory structure
-   * and returns the newly output file.
-   */
-  @Throws(IOException::class)
-  public fun writeTo(directory: File): File = writeTo(directory.toPath()).toFile()
+  // TODO JVM Path
+  // /**
+  //  * Writes this to [directory] as UTF-8 using the standard directory structure
+  //  * and returns the newly output file.
+  //  */
+  // @Throws(IOException::class)
+  // public fun writeTo(directory: File): File = writeTo(directory.toPath()).toFile()
 
-  /** Writes this to `filer`.  */
-  @Throws(IOException::class)
-  public fun writeTo(filer: Filer) {
-    val originatingElements = members.asSequence()
-      .filterIsInstance<OriginatingElementsHolder>()
-      .flatMap { it.originatingElements.asSequence() }
-      .toSet()
-    val filerSourceFile = filer.createResource(
-      StandardLocation.SOURCE_OUTPUT,
-      packageName,
-      "$name.$extension",
-      *originatingElements.toTypedArray(),
-    )
-    try {
-      filerSourceFile.openWriter().use { writer -> writeTo(writer) }
-    } catch (e: Exception) {
-      try {
-        filerSourceFile.delete()
-      } catch (_: Exception) {
-      }
-      throw e
-    }
-  }
+  // TODO JVM Path
+  // /** Writes this to `filer`.  */
+  // @Throws(IOException::class)
+  // public fun writeTo(filer: Filer) {
+  //   val originatingElements = members.asSequence()
+  //     .filterIsInstance<OriginatingElementsHolder>()
+  //     .flatMap { it.originatingElements.asSequence() }
+  //     .toSet()
+  //   val filerSourceFile = filer.createResource(
+  //     StandardLocation.SOURCE_OUTPUT,
+  //     packageName,
+  //     "$name.$extension",
+  //     *originatingElements.toTypedArray(),
+  //   )
+  //   try {
+  //     filerSourceFile.openWriter().use { writer -> writeTo(writer) }
+  //   } catch (e: Exception) {
+  //     try {
+  //       filerSourceFile.delete()
+  //     } catch (_: Exception) {
+  //     }
+  //     throw e
+  //   }
+  // }
 
   private fun emit(codeWriter: CodeWriter, collectingImports: Boolean) {
     if (comment.isNotEmpty()) {
@@ -213,29 +223,30 @@ public class FileSpec private constructor(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false
-    if (javaClass != other.javaClass) return false
+    if (this::class != other::class) return false
     return toString() == other.toString()
   }
 
   override fun hashCode(): Int = toString().hashCode()
 
-  override fun toString(): String = buildString { writeTo(this) }
-
-  public fun toJavaFileObject(): JavaFileObject {
-    val uri = URI.create(relativePath)
-    return object : SimpleJavaFileObject(uri, Kind.SOURCE) {
-      private val lastModified = System.currentTimeMillis()
-      override fun getCharContent(ignoreEncodingErrors: Boolean): String {
-        return this@FileSpec.toString()
-      }
-
-      override fun openInputStream(): InputStream {
-        return ByteArrayInputStream(getCharContent(true).toByteArray(UTF_8))
-      }
-
-      override fun getLastModified() = lastModified
-    }
-  }
+  // TODO
+  // override fun toString(): String = buildString { writeTo(this) }
+  //
+  // public fun toJavaFileObject(): JavaFileObject {
+  //   val uri = URI.create(relativePath)
+  //   return object : SimpleJavaFileObject(uri, Kind.SOURCE) {
+  //     private val lastModified = System.currentTimeMillis()
+  //     override fun getCharContent(ignoreEncodingErrors: Boolean): String {
+  //       return this@FileSpec.toString()
+  //     }
+  //
+  //     override fun openInputStream(): InputStream {
+  //       return ByteArrayInputStream(getCharContent(true).toByteArray(UTF_8))
+  //     }
+  //
+  //     override fun getLastModified() = lastModified
+  //   }
+  // }
 
   @JvmOverloads
   public fun toBuilder(packageName: String = this.packageName, name: String = this.name): Builder {
@@ -344,12 +355,13 @@ public class FileSpec private constructor(
       }
     }
 
-    public fun addImport(constant: Enum<*>): Builder = addImport(
-      constant.declaringJavaClass.asClassName(),
-      constant.name,
-    )
+    // TODO constant.declaringJavaClass
+    // public fun addImport(constant: Enum<*>): Builder = addImport(
+    //   constant.declaringJavaClass.asClassName(),
+    //   constant.name,
+    // )
 
-    public fun addImport(`class`: Class<*>, vararg names: String): Builder = apply {
+    public fun addImport(`class`: JvmClass<*>, vararg names: String): Builder = apply {
       require(names.isNotEmpty()) { "names array is empty" }
       addImport(`class`.asClassName(), names.toList())
     }
@@ -364,7 +376,7 @@ public class FileSpec private constructor(
       addImport(className, names.toList())
     }
 
-    public fun addImport(`class`: Class<*>, names: Iterable<String>): Builder =
+    public fun addImport(`class`: JvmClass<*>, names: Iterable<String>): Builder =
       addImport(`class`.asClassName(), names)
 
     public fun addImport(`class`: KClass<*>, names: Iterable<String>): Builder =
@@ -401,7 +413,7 @@ public class FileSpec private constructor(
       memberImports.clear()
     }
 
-    public fun addAliasedImport(`class`: Class<*>, `as`: String): Builder =
+    public fun addAliasedImport(`class`: JvmClass<*>, `as`: String): Builder =
       addAliasedImport(`class`.asClassName(), `as`)
 
     public fun addAliasedImport(`class`: KClass<*>, `as`: String): Builder =
@@ -538,7 +550,7 @@ public class FileSpec private constructor(
       message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
         "using the kotlinpoet-metadata APIs instead.",
     )
-    override fun addAnnotation(annotation: Class<*>): Builder = super.addAnnotation(annotation)
+    override fun addAnnotation(annotation: JvmClass<*>): Builder = super.addAnnotation(annotation)
 
     @Suppress("RedundantOverride")
     override fun addAnnotation(annotation: KClass<*>): Builder = super.addAnnotation(annotation)

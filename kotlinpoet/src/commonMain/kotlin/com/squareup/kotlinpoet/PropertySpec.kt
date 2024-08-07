@@ -18,9 +18,10 @@ package com.squareup.kotlinpoet
 import com.squareup.kotlinpoet.FunSpec.Companion.GETTER
 import com.squareup.kotlinpoet.FunSpec.Companion.SETTER
 import com.squareup.kotlinpoet.KModifier.Target.PROPERTY
-import java.lang.reflect.Type
-import java.util.EnumSet
-import javax.lang.model.element.Element
+import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.JvmElement
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
 
 /** A generated property declaration. */
@@ -106,7 +107,7 @@ public class PropertySpec private constructor(
     }
     codeWriter.emitWhereBlock(typeVariables)
     if (!inline) codeWriter.emit("\n")
-    val implicitAccessorModifiers = EnumSet.noneOf(KModifier::class.java)
+    val implicitAccessorModifiers = enumSetOf<KModifier>()
     for (modifier in implicitModifiers) {
       // Omit visibility modifiers, accessor visibility will default to the property's visibility.
       if (modifier !in VISIBILITY_MODIFIERS) {
@@ -142,7 +143,7 @@ public class PropertySpec private constructor(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false
-    if (javaClass != other.javaClass) return false
+    if (this::class != other::class) return false
     return toString() == other.toString()
   }
 
@@ -189,7 +190,7 @@ public class PropertySpec private constructor(
     public val typeVariables: MutableList<TypeVariableName> = mutableListOf()
     override val tags: MutableMap<KClass<*>, Any> = mutableMapOf()
     override val kdoc: CodeBlock.Builder = CodeBlock.builder()
-    override val originatingElements: MutableList<Element> = mutableListOf()
+    override val originatingElements: MutableList<JvmElement> = mutableListOf()
     override val annotations: MutableList<AnnotationSpec> = mutableListOf()
 
     @ExperimentalKotlinPoetApi
@@ -246,11 +247,12 @@ public class PropertySpec private constructor(
       this.receiverType = receiverType
     }
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    public fun receiver(receiverType: Type): Builder = receiver(receiverType.asTypeName())
+    // TODO Jvm Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // public fun receiver(receiverType: Type): Builder = receiver(receiverType.asTypeName())
 
     public fun receiver(receiverType: KClass<*>): Builder = receiver(receiverType.asTypeName())
 
@@ -269,7 +271,7 @@ public class PropertySpec private constructor(
       message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
         "using the kotlinpoet-metadata APIs instead.",
     )
-    override fun addAnnotation(annotation: Class<*>): Builder = super.addAnnotation(annotation)
+    override fun addAnnotation(annotation: JvmClass<*>): Builder = super.addAnnotation(annotation)
 
     @Suppress("RedundantOverride")
     override fun addAnnotation(annotation: KClass<*>): Builder = super.addAnnotation(annotation)
@@ -304,8 +306,9 @@ public class PropertySpec private constructor(
       return Builder(name, type).addModifiers(*modifiers)
     }
 
-    @JvmStatic public fun builder(name: String, type: Type, vararg modifiers: KModifier): Builder =
-      builder(name, type.asTypeName(), *modifiers)
+    // TODO JVM Type
+    // @JvmStatic public fun builder(name: String, type: Type, vararg modifiers: KModifier): Builder =
+    //   builder(name, type.asTypeName(), *modifiers)
 
     @JvmStatic public fun builder(
       name: String,
@@ -321,16 +324,17 @@ public class PropertySpec private constructor(
       return Builder(name, type).addModifiers(modifiers)
     }
 
-    @DelicateKotlinPoetApi(
-      message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
-        "using the kotlinpoet-metadata APIs instead.",
-    )
-    @JvmStatic
-    public fun builder(
-      name: String,
-      type: Type,
-      modifiers: Iterable<KModifier>,
-    ): Builder = builder(name, type.asTypeName(), modifiers)
+    // TODO JVM Type
+    // @DelicateKotlinPoetApi(
+    //   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
+    //     "using the kotlinpoet-metadata APIs instead.",
+    // )
+    // @JvmStatic
+    // public fun builder(
+    //   name: String,
+    //   type: Type,
+    //   modifiers: Iterable<KModifier>,
+    // ): Builder = builder(name, type.asTypeName(), modifiers)
 
     @JvmStatic public fun builder(
       name: String,
