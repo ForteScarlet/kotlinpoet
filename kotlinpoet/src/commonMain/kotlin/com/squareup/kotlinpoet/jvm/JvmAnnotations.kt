@@ -32,21 +32,20 @@ import com.squareup.kotlinpoet.JvmOverloadsClassName
 import com.squareup.kotlinpoet.JvmRecordClassName
 import com.squareup.kotlinpoet.JvmStaticClassName
 import com.squareup.kotlinpoet.JvmSuppressWildcardsClassName
+import com.squareup.kotlinpoet.JvmThrowsClassName
+import com.squareup.kotlinpoet.JvmVolatileClassName
 import com.squareup.kotlinpoet.JvmWildcardClassName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.StrictfpClassName
 import com.squareup.kotlinpoet.SynchronizedClassName
-import com.squareup.kotlinpoet.ThrowsClassName
 import com.squareup.kotlinpoet.TransientClassName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.VolatileClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.jvm.alias.JvmType
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
-
 
 public fun FileSpec.Builder.jvmName(name: String): FileSpec.Builder = addAnnotation(
   AnnotationSpec.builder(JvmNameClassName)
@@ -105,7 +104,7 @@ public fun FunSpec.Builder.throws(vararg exceptionClasses: TypeName): FunSpec.Bu
 
 public fun FunSpec.Builder.throws(exceptionClasses: Iterable<TypeName>): FunSpec.Builder =
   addAnnotation(
-    AnnotationSpec.builder(ThrowsClassName)
+    AnnotationSpec.builder(JvmThrowsClassName)
       .apply { exceptionClasses.forEach { addMember("%T::class", it) } }
       .build(),
   )
@@ -135,7 +134,7 @@ public fun PropertySpec.Builder.jvmSuppressWildcards(
 
 public fun PropertySpec.Builder.transient(): PropertySpec.Builder = addAnnotation(TransientClassName)
 
-public fun PropertySpec.Builder.volatile(): PropertySpec.Builder = addAnnotation(VolatileClassName)
+public fun PropertySpec.Builder.volatile(): PropertySpec.Builder = addAnnotation(JvmVolatileClassName)
 
 public fun TypeName.jvmSuppressWildcards(suppress: Boolean = true): TypeName =
   copy(annotations = this.annotations + jvmSuppressWildcardsAnnotation(suppress))

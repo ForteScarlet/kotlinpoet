@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2024 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @file:JvmName("AnnotationSpecs")
 @file:JvmMultifileClass
 
@@ -13,10 +28,8 @@ import javax.lang.model.element.VariableElement
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.SimpleAnnotationValueVisitor8
 
-
 internal actual fun resolveEnumValueCodeBlock(value: Enum<*>): CodeBlock =
   CodeBlock.of("%T.%L", value.javaClass, value.name)
-
 
 /**
  * Annotation value visitor adding members to the given builder instance.
@@ -54,42 +67,42 @@ internal actual fun doGet(
   includeDefaultValues: Boolean,
 ): AnnotationSpec {
   try {
-      @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-      val javaAnnotation = annotation as java.lang.annotation.Annotation
-      val builder = builder(javaAnnotation.annotationType())
-        .tag(annotation)
-      val methods = annotation.annotationType().declaredMethods.sortedBy { it.name }
-      for (method in methods) {
-        val value = method.invoke(annotation)
-        if (!includeDefaultValues) {
-          if (Objects.deepEquals(value, method.defaultValue)) {
-            continue
-          }
-        }
-        val member = CodeBlock.builder()
-        member.add("%L = ", method.name)
-        if (value.javaClass.isArray) {
-          member.add("arrayOf(⇥⇥")
-          for (i in 0..<java.lang.reflect.Array.getLength(value)) {
-            if (i > 0) member.add(", ")
-            member.add(AnnotationSpec.Builder.memberForValue(java.lang.reflect.Array.get(value, i)))
-          }
-          member.add("⇤⇤)")
-          builder.addMember(member.build())
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    val javaAnnotation = annotation as java.lang.annotation.Annotation
+    val builder = builder(javaAnnotation.annotationType())
+      .tag(annotation)
+    val methods = annotation.annotationType().declaredMethods.sortedBy { it.name }
+    for (method in methods) {
+      val value = method.invoke(annotation)
+      if (!includeDefaultValues) {
+        if (Objects.deepEquals(value, method.defaultValue)) {
           continue
         }
-        if (value is Annotation) {
-          member.add("%L", AnnotationSpec.get(value))
-          builder.addMember(member.build())
-          continue
-        }
-        member.add("%L", AnnotationSpec.Builder.memberForValue(value))
-        builder.addMember(member.build())
       }
-      return builder.build()
-    } catch (e: Exception) {
-      throw RuntimeException("Reflecting $annotation failed!", e)
+      val member = CodeBlock.builder()
+      member.add("%L = ", method.name)
+      if (value.javaClass.isArray) {
+        member.add("arrayOf(⇥⇥")
+        for (i in 0..<java.lang.reflect.Array.getLength(value)) {
+          if (i > 0) member.add(", ")
+          member.add(AnnotationSpec.Builder.memberForValue(java.lang.reflect.Array.get(value, i)))
+        }
+        member.add("⇤⇤)")
+        builder.addMember(member.build())
+        continue
+      }
+      if (value is Annotation) {
+        member.add("%L", AnnotationSpec.get(value))
+        builder.addMember(member.build())
+        continue
+      }
+      member.add("%L", AnnotationSpec.Builder.memberForValue(value))
+      builder.addMember(member.build())
     }
+    return builder.build()
+  } catch (e: Exception) {
+    throw RuntimeException("Reflecting $annotation failed!", e)
+  }
 }
 
 internal actual fun doGet(annotation: JvmAnnotationMirror): AnnotationSpec {

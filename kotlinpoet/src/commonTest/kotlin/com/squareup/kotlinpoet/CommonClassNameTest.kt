@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Square, Inc.
+ * Copyright (C) 2014 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.squareup.kotlinpoet.jvm.alias
+package com.squareup.kotlinpoet
 
-import javax.lang.model.element.AnnotationMirror
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-/**
- *
- * @author ForteScarlet
- */
-public actual typealias JvmAnnotationMirror = AnnotationMirror
+class CommonClassNameTest {
+
+  @Test
+  fun classNameFromClass() {
+    assertEquals(
+      "kotlin.Any",
+      Any::class.asClassName().toString(),
+    )
+  }
+}

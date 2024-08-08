@@ -70,9 +70,16 @@ internal fun characterLiteralWithoutSingleQuotes(c: Char) = when {
   else -> c.toString()
 }
 
+@ExperimentalStdlibApi
+private val HexFormatWithoutLeadingZeros = HexFormat {
+  number {
+    removeLeadingZeros = true
+  }
+}
+
 @OptIn(ExperimentalStdlibApi::class)
 internal fun Appendable.appendFormat04x(code: Int) {
-  val hex = code.toHexString()
+  val hex = code.toHexString(HexFormatWithoutLeadingZeros)
   if (hex.length < 4) {
     repeat(4 - hex.length) { append('0') }
   }
@@ -177,6 +184,9 @@ internal fun CodeBlock.trimTrailingNewLine(replaceWith: Char? = null) = if (isEm
   }
 }
 
+// TODO Will be crashed in wasm-js :(
+//  -> PatternSyntaxException: No such character class
+//  It works in JS and JVM
 private val IDENTIFIER_REGEX =
   (
     "((\\p{gc=Lu}+|\\p{gc=Ll}+|\\p{gc=Lt}+|\\p{gc=Lm}+|\\p{gc=Lo}+|\\p{gc=Nl}+)+" +
@@ -341,7 +351,7 @@ internal fun String.escapeAsAlias(validate: Boolean = true): String {
     }
 
     if (!ch.isJavaIdentifierPart()) {
-      newAlias.append("_U").append(ch.code.toHexString().padStart(4, '0'))
+      newAlias.append("_U").append(ch.code.toHexString(HexFormatWithoutLeadingZeros).padStart(4, '0'))
       continue
     }
 

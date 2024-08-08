@@ -25,7 +25,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 
-
 /** Returns a parameterized type equivalent to `type`.  */
 @DelicateKotlinPoetApi(
   message = "Java reflection APIs don't give complete information on Kotlin types. Consider " +
@@ -34,7 +33,6 @@ import kotlin.reflect.KVariance
 @JvmName("get")
 public fun ParameterizedType.asParameterizedTypeName(): ParameterizedTypeName =
   ParameterizedTypeName.get(this, mutableMapOf())
-
 
 /** Returns a parameterized type equivalent to `type`. */
 internal fun ParameterizedTypeName.Companion.get(

@@ -556,7 +556,6 @@ private val KOTLIN_DEFAULT_IMPORTS = setOf(
 private val KOTLIN_DEFAULT_JVM_IMPORTS = setOf("java.lang")
 private val KOTLIN_DEFAULT_JS_IMPORTS = setOf("kotlin.js")
 
-
 @Throws(JvmIOException::class)
 internal expect fun FileSpec.writeToPath(directory: JvmPath): JvmPath
 

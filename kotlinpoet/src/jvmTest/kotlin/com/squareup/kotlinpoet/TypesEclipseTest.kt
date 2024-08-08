@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Google, Inc.
+ * Copyright (C) 2014 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,6 @@ package com.squareup.kotlinpoet
 
 import com.google.common.base.Charsets.UTF_8
 import com.google.common.collect.ImmutableSet
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler
-import org.junit.Rule
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.JUnit4
-import org.junit.runners.model.Statement
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 import javax.annotation.processing.AbstractProcessor
@@ -36,6 +30,12 @@ import javax.lang.model.util.Types
 import javax.tools.DiagnosticCollector
 import javax.tools.JavaFileObject
 import kotlin.test.Ignore
+import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler
+import org.junit.Rule
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.JUnit4
+import org.junit.runners.model.Statement
 
 @Ignore("Not clear this test is useful to retain in the Kotlin world")
 class TypesEclipseTest : AbstractTypesTest() {
@@ -73,7 +73,7 @@ class TypesEclipseTest : AbstractTypesTest() {
 
               override fun process(
                 annotations: Set<TypeElement>,
-                roundEnv: RoundEnvironment
+                roundEnv: RoundEnvironment,
               ): Boolean {
                 // just run the test on the last round after compilation is over
                 if (roundEnv.processingOver()) {
@@ -85,7 +85,7 @@ class TypesEclipseTest : AbstractTypesTest() {
                 }
                 return false
               }
-            })
+            }),
           )
           check(successful)
           val t = thrown.get()
@@ -114,7 +114,9 @@ class TypesEclipseTest : AbstractTypesTest() {
       val compiler = EclipseCompiler()
       val diagnosticCollector = DiagnosticCollector<JavaFileObject>()
       val fileManager = compiler.getStandardFileManager(
-        diagnosticCollector, Locale.getDefault(), UTF_8
+        diagnosticCollector,
+        Locale.getDefault(),
+        UTF_8,
       )
       val task = compiler.getTask(
         null,
@@ -122,14 +124,15 @@ class TypesEclipseTest : AbstractTypesTest() {
         diagnosticCollector,
         ImmutableSet.of(),
         ImmutableSet.of(TypesEclipseTest::class.java.canonicalName),
-        ImmutableSet.of()
+        ImmutableSet.of(),
       )
       task.setProcessors(processors)
       return task.call()!!
     }
   }
 
-  @JvmField @Rule val compilation = CompilationRule()
+  @JvmField @Rule
+  val compilation = CompilationRule()
 
   override val elements: Elements
     get() = compilation.getElements()

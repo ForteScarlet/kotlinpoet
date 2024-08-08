@@ -227,14 +227,21 @@ public sealed class TypeName constructor(
   message = "Mirror APIs don't give complete information on Kotlin types. Consider using" +
     " the kotlinpoet-metadata APIs instead.",
 )
-public expect fun JvmTypeMirror.asTypeName(): TypeName // = TypeName.get(this, mutableMapOf())
+@JvmName("get")
+public fun JvmTypeMirror.asTypeName(): TypeName = asTypeNameInternal()
+
+/** Returns a [TypeName] equivalent to this [JvmType].  */
+@JvmName("get")
+public fun JvmType.asTypeName(): TypeName = asTypeNameInternal()
 
 /** Returns a [TypeName] equivalent to this [KClass].  */
 @JvmName("get")
 public fun KClass<*>.asTypeName(): ClassName = asClassName()
 
+internal expect fun JvmTypeMirror.asTypeNameInternal(): TypeName
+
 /** Returns a [TypeName] equivalent to this [JvmType].  */
-public expect fun JvmType.asTypeName(): TypeName
+internal expect fun JvmType.asTypeNameInternal(): TypeName
 
 /**
  * Returns a [TypeName] equivalent of the reified type parameter [T] using reflection, maybe using kotlin-reflect

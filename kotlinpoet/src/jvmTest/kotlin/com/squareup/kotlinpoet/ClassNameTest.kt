@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Google, Inc.
+ * Copyright (C) 2014 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package com.squareup.kotlinpoet
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.CompilationRule
 import com.squareup.kotlinpoet.Cased.Weird.Sup
-import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.junit.Rule
 
 class ClassNameTest {
-  @Rule @JvmField var compilationRule = CompilationRule()
+  @Rule @JvmField
+  var compilationRule = CompilationRule()
 
   @Test fun bestGuessForString_simpleClass() {
     assertThat(ClassName.bestGuess(String::class.java.name))
@@ -32,7 +33,7 @@ class ClassNameTest {
 
   @Test fun bestGuessNonAscii() {
     val className = ClassName.bestGuess(
-      "com.\ud835\udc1andro\ud835\udc22d.\ud835\udc00ctiv\ud835\udc22ty"
+      "com.\ud835\udc1andro\ud835\udc22d.\ud835\udc00ctiv\ud835\udc22ty",
     )
     assertEquals("com.\ud835\udc1andro\ud835\udc22d", className.packageName)
     assertEquals("\ud835\udc00ctiv\ud835\udc22ty", className.simpleName)
@@ -49,8 +50,10 @@ class ClassNameTest {
       .isEqualTo(
         ClassName(
           "com.squareup.kotlinpoet",
-          "ClassNameTest", "OuterClass", "InnerClass"
-        )
+          "ClassNameTest",
+          "OuterClass",
+          "InnerClass",
+        ),
       )
   }
 
@@ -160,7 +163,8 @@ class ClassNameTest {
   }
 
   @Suppress("DEPRECATION_ERROR") // Ensure still throws in case called from Java.
-  @Test fun fromEmptySimpleName() {
+  @Test
+  fun fromEmptySimpleName() {
     assertThrows<IllegalArgumentException> {
       ClassName("foo" /* no simple name */)
     }
@@ -200,7 +204,7 @@ class ClassNameTest {
       .addFunction(
         FunSpec.builder("main")
           .addStatement("println(%T.produceTacos())", tacoFactory)
-          .build()
+          .build(),
       )
       .build()
     assertThat(file.toString()).isEqualTo(
@@ -212,7 +216,8 @@ class ClassNameTest {
       |public fun main() {
       |  println(`Taco Factory`.produceTacos())
       |}
-      |""".trimMargin()
+      |
+      """.trimMargin(),
     )
   }
 
@@ -225,7 +230,7 @@ class ClassNameTest {
       ClassName(packageName = "", simpleNames = arrayOf("Foo", "Bar", ""))
     }.hasMessageThat().isEqualTo(
       "simpleNames must not contain empty items: " +
-        "[Foo, Bar, ]"
+        "[Foo, Bar, ]",
     )
 
     assertThrows<IllegalArgumentException> {
@@ -236,7 +241,7 @@ class ClassNameTest {
       ClassName(packageName = "", simpleNames = listOf("Foo", "Bar", ""))
     }.hasMessageThat().isEqualTo(
       "simpleNames must not contain empty items: " +
-        "[Foo, Bar, ]"
+        "[Foo, Bar, ]",
     )
   }
 
@@ -315,7 +320,7 @@ class ClassNameTest {
 
   @Test fun compareToDifferentiatesNullabilityAndAnnotations() {
     val plain = ClassName(
-      listOf("com.example", "Foo")
+      listOf("com.example", "Foo"),
     )
     val nullable = ClassName(
       listOf("com.example", "Foo"),

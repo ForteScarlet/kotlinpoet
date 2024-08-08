@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2024 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 @file:JvmName("ClassNames")
 @file:JvmMultifileClass
 
@@ -17,8 +32,8 @@ import kotlin.reflect.KClass
 import kotlin.text.substring
 
 @DelicateKotlinPoetApi(
-    message = "Java reflection APIs don't give complete information on Kotlin types. Consider using" +
-            " the kotlinpoet-metadata APIs instead.",
+  message = "Java reflection APIs don't give complete information on Kotlin types. Consider using" +
+    " the kotlinpoet-metadata APIs instead.",
 )
 @JvmName("get")
 public actual fun JvmClass<*>.asClassName(): ClassName {
@@ -42,7 +57,7 @@ public actual fun JvmClass<*>.asClassName(): ClassName {
 /** Returns the class name for `element`. */
 @DelicateKotlinPoetApi(
   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-    " the kotlinpoet-metadata APIs instead."
+    " the kotlinpoet-metadata APIs instead.",
 )
 @JvmName("get")
 public actual fun JvmTypeElement.asClassName(): ClassName {
@@ -73,7 +88,6 @@ public actual fun JvmTypeElement.asClassName(): ClassName {
 
 internal actual fun KClass<*>.qualifiedNameInternal(): String? =
   qualifiedName
-
 
 internal actual fun Enum<*>.declaringClassName(): ClassName =
   this.declaringJavaClass.asClassName()

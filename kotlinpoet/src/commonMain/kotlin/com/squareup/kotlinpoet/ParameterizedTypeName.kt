@@ -196,10 +196,10 @@ public class ParameterizedTypeName internal constructor(
 }
 
 internal expect fun ParameterizedTypeName.Companion.get(
-    type: KClass<*>,
-    nullable: Boolean,
-    typeArguments: List<KTypeProjection>,
-  ): TypeName
+  type: KClass<*>,
+  nullable: Boolean,
+  typeArguments: List<KTypeProjection>,
+): TypeName
 
 /**
  * Returns a [TypeName] equivalent to the given Kotlin KType using reflection, maybe using kotlin-reflect

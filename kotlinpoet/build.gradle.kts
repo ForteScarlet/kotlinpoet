@@ -40,13 +40,36 @@ kotlin {
   }
 
   js {
-    browser()
-    nodejs()
+    browser {
+      testTask {
+        useKarma {
+          useChromeHeadless()
+        }
+      }
+    }
+    nodejs {
+      testTask {
+        useMocha()
+      }
+    }
     binaries.library()
+
   }
 
   @OptIn(ExperimentalWasmDsl::class)
   wasmJs {
+    browser {
+      testTask {
+        useKarma {
+          useChromeHeadless()
+        }
+      }
+    }
+    nodejs {
+      testTask {
+        useMocha()
+      }
+    }
     binaries.library()
   }
 
@@ -64,8 +87,8 @@ kotlin {
       }
     }
 
-    jvmMain {
-
+    commonTest.dependencies {
+      implementation(kotlin("test"))
     }
 
     val nonJvmMain by creating {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Google, Inc.
+ * Copyright (C) 2014 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,9 +71,9 @@ abstract class AbstractTypesTest {
     ExtendsInterface : Runnable,
     ExtendsTypeVariable : Simple,
     Intersection,
-    IntersectionOfInterfaces>
-  where IntersectionOfInterfaces : Runnable, Intersection : Number, Intersection : Runnable,
-        IntersectionOfInterfaces : Serializable
+    IntersectionOfInterfaces,>
+    where IntersectionOfInterfaces : Runnable, Intersection : Number, Intersection : Runnable,
+          IntersectionOfInterfaces : Serializable
 
   @Test fun getTypeVariableTypeMirror() {
     val typeVariables = getElement(Parameterized::class.java).typeParameters
@@ -151,7 +151,8 @@ abstract class AbstractTypesTest {
   }
 
   @Ignore("Figure out what this maps to in Kotlin.")
-  @Test fun starProjectionFromMirror() {
+  @Test
+  fun starProjectionFromMirror() {
     val wildcard = types.getWildcardType(null, null)
     val type = wildcard.asTypeName()
     assertThat(type.toString()).isEqualTo("*")

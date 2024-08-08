@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 @file:JvmName("CodeBlocks")
 @file:JvmMultifileClass
 
@@ -47,7 +46,6 @@ internal actual fun formatNumericValue(o: Number): Any? {
 
   return DecimalFormat(pattern, format).format(o)
 }
-
 
 internal actual inline fun argToType(
   o: Any?,
