@@ -15,17 +15,18 @@
  */
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmElement
+import com.squareup.kotlinpoet.jvm.JvmDefaultWithCompatibility
+import com.squareup.kotlinpoet.jvm.alias.JvmElement
 import kotlin.jvm.JvmInline
 
-/** A type that can have originating [elements][Element]. */
+/** A type that can have originating [elements][JvmElement]. */
 public interface OriginatingElementsHolder {
 
   /** The originating elements of this type. */
   public val originatingElements: List<JvmElement>
 
   /** The builder analogue to [OriginatingElementsHolder] types. */
-  // TODO @JvmDefaultWithCompatibility
+  @JvmDefaultWithCompatibility
   public interface Builder<out T : Builder<T>> {
 
     /** Mutable map of the current originating elements this builder contains. */

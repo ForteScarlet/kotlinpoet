@@ -15,7 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
 import kotlin.reflect.KClass
 
 /** A spec or type which can be annotated. */

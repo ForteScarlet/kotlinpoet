@@ -15,7 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
-import java.util.UUID
+import kotlin.jvm.JvmOverloads
 
 /**
  * Assigns Kotlin identifier names to avoid collisions, keywords, and invalid characters. To use,
@@ -118,7 +118,7 @@ public class NameAllocator private constructor(
    */
   @JvmOverloads public fun newName(
     suggestion: String,
-    tag: Any = UUID.randomUUID().toString(),
+    tag: Any = defaultNewNameTag(),
   ): String {
     var result = toJavaIdentifier(suggestion)
     while (!allocatedNames.add(result)) {
@@ -149,23 +149,26 @@ public class NameAllocator private constructor(
   }
 }
 
+internal expect fun defaultNewNameTag(): Any
+
 private fun toJavaIdentifier(suggestion: String) = buildString {
   var i = 0
   while (i < suggestion.length) {
     val codePoint = suggestion.codePointAt(i)
     if (i == 0 &&
-      !Character.isJavaIdentifierStart(codePoint) &&
-      Character.isJavaIdentifierPart(codePoint)
+      !codePoint.isJavaIdentifierStart() &&
+      codePoint.isJavaIdentifierPart()
     ) {
       append("_")
     }
 
-    val validCodePoint: Int = if (Character.isJavaIdentifierPart(codePoint)) {
+    val validCodePoint: CodePoint = if (codePoint.isJavaIdentifierPart()) {
       codePoint
     } else {
-      '_'.code
+      CodePoint('_'.code)
     }
+
     appendCodePoint(validCodePoint)
-    i += Character.charCount(codePoint)
+    i += codePoint.charCount()
   }
 }

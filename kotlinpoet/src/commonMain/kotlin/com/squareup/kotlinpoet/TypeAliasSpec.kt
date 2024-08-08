@@ -19,8 +19,8 @@ import com.squareup.kotlinpoet.KModifier.ACTUAL
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
-import com.squareup.kotlinpoet.jvm.JvmClass
-import java.lang.reflect.Type
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmType
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
@@ -148,7 +148,7 @@ public class TypeAliasSpec private constructor(
         "using the kotlinpoet-metadata APIs instead.",
     )
     @JvmStatic
-    public fun builder(name: String, type: Type): Builder =
+    public fun builder(name: String, type: JvmType): Builder =
       builder(name, type.asTypeName())
 
     @JvmStatic public fun builder(name: String, type: KClass<*>): Builder =

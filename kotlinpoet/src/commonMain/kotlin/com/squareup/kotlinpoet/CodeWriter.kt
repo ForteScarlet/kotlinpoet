@@ -18,8 +18,10 @@ package com.squareup.kotlinpoet
 import com.squareup.kotlinpoet.jvm.isJavaIdentifierStart
 import kotlin.math.min
 
+internal expect fun initNoPackage(): String
+
 /** Sentinel value that indicates that no user-provided package has been set.  */
-private val NO_PACKAGE = String()
+private val NO_PACKAGE = initNoPackage()
 
 internal val NULLABLE_ANY = ANY.copy(nullable = true)
 

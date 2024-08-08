@@ -18,7 +18,8 @@
 
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmTypeElement
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -217,7 +218,6 @@ public class ClassName internal constructor(
 
       // Add the package name, like "java.util.concurrent", or "" for no package.
       var p = 0
-      // TODO Code Point
       while (p < classNameString.length && classNameString.codePointAt(p).isLowerCase()) {
         p = classNameString.indexOf('.', p) + 1
         require(p != 0) { "couldn't make a guess for $classNameString" }
@@ -249,9 +249,18 @@ public class ClassName internal constructor(
 )
 public expect fun JvmClass<*>.asClassName(): ClassName
 
+/** Returns the class name for `element`. */
+@DelicateKotlinPoetApi(
+  message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+    " the kotlinpoet-metadata APIs instead."
+)
+public expect fun JvmTypeElement.asClassName(): ClassName
+
+internal expect fun KClass<*>.qualifiedNameInternal(): String?
+
 @JvmName("get")
 public fun KClass<*>.asClassName(): ClassName {
-  var qualifiedName = requireNotNull(qualifiedName) { "$this cannot be represented as a ClassName" }
+  var qualifiedName = requireNotNull(qualifiedNameInternal()) { "$this cannot be represented as a ClassName" }
 
   // First, check for Kotlin types whose enclosing class name is a type that is mapped to a JVM
   // class. Thus, the class backing the nested Kotlin type does not have an enclosing class
@@ -269,7 +278,6 @@ public fun KClass<*>.asClassName(): ClassName {
     "kotlin.String.Companion" -> listOf("kotlin", "String", "Companion")
     else -> {
       val names = ArrayDeque<String>()
-      // TODO enclosing class
       var target: KClass<*>? = this
       while (target != null) {
         target = target.enclosingClass()
@@ -293,3 +301,4 @@ public fun KClass<*>.asClassName(): ClassName {
   return ClassName(names)
 }
 
+internal expect fun Enum<*>.declaringClassName(): ClassName

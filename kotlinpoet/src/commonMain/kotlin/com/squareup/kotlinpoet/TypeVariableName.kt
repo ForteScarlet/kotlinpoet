@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 @file:JvmName("TypeVariableNames")
+@file:JvmMultifileClass
 
 package com.squareup.kotlinpoet
 
+import com.squareup.kotlinpoet.jvm.alias.JvmType
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -24,8 +27,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeParameter
 import kotlin.reflect.KVariance
-
-// TODO Make this as a expect class?
 
 public class TypeVariableName private constructor(
   public val name: String,
@@ -146,20 +147,20 @@ public class TypeVariableName private constructor(
         variance = variance,
       )
 
-    // /** Returns type variable named `name` with `variance` and `bounds`. */
-    // @JvmStatic
-    // @JvmName("get")
-    // @JvmOverloads
-    // public operator fun invoke(
-    //   name: String,
-    //   vararg bounds: Type,
-    //   variance: KModifier? = null,
-    // ): TypeVariableName =
-    //   of(
-    //     name = name,
-    //     bounds = bounds.map(Type::asTypeName).ifEmpty(::NULLABLE_ANY_LIST),
-    //     variance = variance,
-    //   )
+    /** Returns type variable named `name` with `variance` and `bounds`. */
+    @JvmStatic
+    @JvmName("get")
+    @JvmOverloads
+    public operator fun invoke(
+      name: String,
+      vararg bounds: JvmType,
+      variance: KModifier? = null,
+    ): TypeVariableName =
+      of(
+        name = name,
+        bounds = bounds.map(JvmType::asTypeName).ifEmpty(::NULLABLE_ANY_LIST),
+        variance = variance,
+      )
 
     /** Returns type variable named `name` with `variance` and `bounds`. */
     @JvmStatic
@@ -186,106 +187,24 @@ public class TypeVariableName private constructor(
         variance,
       )
 
-    // TODO JVM or expect Types?
-    // /** Returns type variable named `name` with `variance` and `bounds`. */
-    // @JvmStatic
-    // @JvmName("getWithTypes")
-    // @JvmOverloads
-    // public operator fun invoke(
-    //   name: String,
-    //   bounds: Iterable<Type>,
-    //   variance: KModifier? = null,
-    // ): TypeVariableName =
-    //   of(
-    //     name,
-    //     bounds.map { it.asTypeName() }.ifEmpty(::NULLABLE_ANY_LIST),
-    //     variance,
-    //   )
-    //
-    // /**
-    //  * Make a TypeVariableName for the given TypeMirror. This form is used internally to avoid
-    //  * infinite recursion in cases like `Enum<E extends Enum<E>>`. When we encounter such a
-    //  * thing, we will make a TypeVariableName without bounds and add that to the `typeVariables`
-    //  * map before looking up the bounds. Then if we encounter this TypeVariable again while
-    //  * constructing the bounds, we can just return it from the map. And, the code that put the entry
-    //  * in `variables` will make sure that the bounds are filled in before returning.
-    //  */
-    // internal fun get(
-    //   mirror: javax.lang.model.type.TypeVariable,
-    //   typeVariables: MutableMap<TypeParameterElement, TypeVariableName>,
-    // ): TypeVariableName {
-    //   val element = mirror.asElement() as TypeParameterElement
-    //   var typeVariableName: TypeVariableName? = typeVariables[element]
-    //   if (typeVariableName == null) {
-    //     // Since the bounds field is public, we need to make it an unmodifiableList. But we control
-    //     // the List that that wraps, which means we can change it before returning.
-    //     val bounds = mutableListOf<TypeName>()
-    //     val visibleBounds = Collections.unmodifiableList(bounds)
-    //     typeVariableName = TypeVariableName(element.simpleName.toString(), visibleBounds)
-    //     typeVariables[element] = typeVariableName
-    //     for (typeMirror in element.bounds) {
-    //       bounds += get(typeMirror, typeVariables)
-    //     }
-    //     bounds.remove(ANY)
-    //     bounds.remove(JAVA_OBJECT)
-    //     if (bounds.isEmpty()) {
-    //       bounds.add(NULLABLE_ANY)
-    //     }
-    //   }
-    //   return typeVariableName
-    // }
-    //
-    // /** Returns type variable equivalent to `type`.  */
-    // internal fun get(
-    //   type: java.lang.reflect.TypeVariable<*>,
-    //   map: MutableMap<Type, TypeVariableName> = mutableMapOf(),
-    // ): TypeVariableName {
-    //   var result: TypeVariableName? = map[type]
-    //   if (result == null) {
-    //     val bounds = mutableListOf<TypeName>()
-    //     val visibleBounds = Collections.unmodifiableList(bounds)
-    //     result = TypeVariableName(type.name, visibleBounds)
-    //     map[type] = result
-    //     for (bound in type.bounds) {
-    //       bounds += get(bound, map)
-    //     }
-    //     bounds.remove(ANY)
-    //     bounds.remove(JAVA_OBJECT)
-    //     if (bounds.isEmpty()) {
-    //       bounds.add(NULLABLE_ANY)
-    //     }
-    //   }
-    //   return result
-    // }
+    /** Returns type variable named `name` with `variance` and `bounds`. */
+    @JvmStatic
+    @JvmName("getWithTypes")
+    @JvmOverloads
+    public operator fun invoke(
+      name: String,
+      bounds: Iterable<JvmType>,
+      variance: KModifier? = null,
+    ): TypeVariableName =
+      of(
+        name,
+        bounds.map { it.asTypeName() }.ifEmpty(::NULLABLE_ANY_LIST),
+        variance,
+      )
 
     internal val NULLABLE_ANY_LIST = listOf(NULLABLE_ANY)
-    private val JAVA_OBJECT = ClassName("java.lang", "Object")
   }
 }
-
-// TODO JVM Only
-// /** Returns type variable equivalent to `mirror`. */
-// @DelicateKotlinPoetApi(
-//   message = "Java reflection APIs don't give complete information on Kotlin types. Consider using" +
-//     " the kotlinpoet-metadata APIs instead.",
-// )
-// @JvmName("get")
-// public fun TypeVariable.asTypeVariableName(): TypeVariableName =
-//   (asElement() as TypeParameterElement).asTypeVariableName()
-//
-// TODO JVM Only
-// /** Returns type variable equivalent to `element`. */
-// @DelicateKotlinPoetApi(
-//   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-//     " the kotlinpoet-metadata APIs instead.",
-// )
-// @JvmName("get")
-// public fun TypeParameterElement.asTypeVariableName(): TypeVariableName {
-//   val name = simpleName.toString()
-//   val boundsTypeNames = bounds.map(TypeMirror::asTypeName)
-//     .ifEmpty(TypeVariableName.Companion::NULLABLE_ANY_LIST)
-//   return TypeVariableName.of(name, boundsTypeNames, variance = null)
-// }
 
 public fun KTypeParameter.asTypeVariableName(): TypeVariableName {
   return TypeVariableName.of(

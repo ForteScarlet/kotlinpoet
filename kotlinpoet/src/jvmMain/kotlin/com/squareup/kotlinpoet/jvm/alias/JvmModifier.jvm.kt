@@ -1,4 +1,4 @@
-package com.squareup.kotlinpoet.jvm
+package com.squareup.kotlinpoet.jvm.alias
 
 import javax.lang.model.element.Modifier
 

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 @file:JvmName("CodeBlocks")
+@file:JvmMultifileClass
 
 package com.squareup.kotlinpoet
 
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
-import kotlin.reflect.KClass
 
 /**
  * A fragment of a .kt file, potentially containing declarations, statements, and documentation.
@@ -367,28 +368,6 @@ public class CodeBlock private constructor(
 
     private fun argToString(o: Any?) = o?.toString()
 
-    private fun formatNumericValue(o: Number): Any? {
-      TODO("formatNumericValue($o)")
-      // val format = DecimalFormatSymbols().apply {
-      //   decimalSeparator = '.'
-      //   groupingSeparator = '_'
-      //   minusSign = '-'
-      // }
-      //
-      // val precision = when (o) {
-      //   is Float -> max(o.toBigDecimal().stripTrailingZeros().scale(), 1)
-      //   is Double -> max(o.toBigDecimal().stripTrailingZeros().scale(), 1)
-      //   else -> 0
-      // }
-      //
-      // val pattern = when (o) {
-      //   is Float, is Double -> "###,##0.0" + "#".repeat(precision - 1)
-      //   else -> "###,##0"
-      // }
-      //
-      // return DecimalFormat(pattern, format).format(o)
-    }
-
     private fun logDeprecationWarning(o: Any) {
       println(
         "Deprecation warning: converting $o to TypeName. Conversion of TypeMirror and" +
@@ -396,20 +375,8 @@ public class CodeBlock private constructor(
       )
     }
 
-    private fun argToType(o: Any?) = when (o) {
-      // TODO use expect fun
-      is TypeName -> o
-      // is TypeMirror -> {
-      //   logDeprecationWarning(o)
-      //   o.asTypeName()
-      // }
-      // is Element -> {
-      //   logDeprecationWarning(o)
-      //   o.asType().asTypeName()
-      // }
-      // is Type -> o.asTypeName()
-      is KClass<*> -> o.asTypeName()
-      else -> throw IllegalArgumentException("expected type but was $o")
+    private fun argToType(o: Any?) = argToType(o) { o1 ->
+      logDeprecationWarning(o1)
     }
 
     /**
@@ -546,3 +513,10 @@ public inline fun buildCodeBlock(builderAction: CodeBlock.Builder.() -> Unit): C
 public inline fun CodeBlock.Builder.withIndent(builderAction: CodeBlock.Builder.() -> Unit): CodeBlock.Builder {
   return indent().also(builderAction).unindent()
 }
+
+internal expect fun formatNumericValue(o: Number): Any?
+
+internal expect inline fun argToType(
+  o: Any?,
+  logDeprecationWarning: (Any) -> Unit,
+): TypeName

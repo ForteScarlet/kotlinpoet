@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
   kotlin("multiplatform")
@@ -43,6 +45,11 @@ kotlin {
     binaries.library()
   }
 
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    binaries.library()
+  }
+
   @OptIn(ExperimentalKotlinGradlePluginApi::class)
   compilerOptions {
     allWarningsAsErrors.set(true)
@@ -56,6 +63,26 @@ kotlin {
         implementation(libs.kotlin.reflect)
       }
     }
+
+    jvmMain {
+
+    }
+
+    val nonJvmMain by creating {
+      dependsOn(commonMain.get())
+    }
+
+    forEach { sourceSet ->
+      if (sourceSet.name.endsWith("Main")
+        && sourceSet != nonJvmMain
+        && sourceSet != commonMain.get()
+        && sourceSet != jvmMain.get()
+      ) {
+        sourceSet.dependsOn(nonJvmMain)
+      }
+    }
+
+
     jvmTest {
       dependencies {
         implementation(libs.kotlin.junit)

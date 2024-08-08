@@ -15,7 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic

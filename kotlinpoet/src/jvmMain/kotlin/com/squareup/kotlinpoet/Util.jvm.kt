@@ -1,13 +1,11 @@
 package com.squareup.kotlinpoet
 
+import kotlin.collections.toSortedSet as toSortedSetKt
+import kotlin.sequences.toSortedSet as toSortedSetKt
 import java.util.Collections
 import java.util.EnumSet
-import kotlin.sequences.toSortedSet as toSortedSetKt
-import kotlin.collections.toSortedSet as toSortedSetKt
-import com.squareup.kotlinpoet.FileSpec.Builder
 import java.util.TreeSet
 import kotlin.reflect.KClass
-import kotlin.sequences.toSortedSet
 
 internal actual fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> =
   Collections.unmodifiableMap(LinkedHashMap(this))

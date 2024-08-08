@@ -18,8 +18,11 @@ package com.squareup.kotlinpoet
 import com.squareup.kotlinpoet.KModifier.CROSSINLINE
 import com.squareup.kotlinpoet.KModifier.NOINLINE
 import com.squareup.kotlinpoet.KModifier.VARARG
-import com.squareup.kotlinpoet.jvm.JvmClass
-import com.squareup.kotlinpoet.jvm.JvmModifier
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmExecutableElement
+import com.squareup.kotlinpoet.jvm.alias.JvmModifier
+import com.squareup.kotlinpoet.jvm.alias.JvmType
+import com.squareup.kotlinpoet.jvm.alias.JvmVariableElement
 import kotlin.DeprecationLevel.ERROR
 import kotlin.jvm.JvmStatic
 import kotlin.reflect.KClass
@@ -156,27 +159,22 @@ public class ParameterSpec private constructor(
   }
 
   public companion object {
-    // TODO Jvm Type
-    // @DelicateKotlinPoetApi(
-    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-    //     " the kotlinpoet-metadata APIs instead.",
-    // )
-    // @JvmStatic
-    // public fun get(element: VariableElement): ParameterSpec {
-    //   val name = element.simpleName.toString()
-    //   val type = element.asType().asTypeName()
-    //   return builder(name, type)
-    //     .build()
-    // }
+    @DelicateKotlinPoetApi(
+      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+        " the kotlinpoet-metadata APIs instead.",
+    )
+    @JvmStatic
+    public fun get(element: JvmVariableElement): ParameterSpec {
+      return doGet(element)
+    }
 
-    // TODO Jvm Types
-    // @DelicateKotlinPoetApi(
-    //   message = "Element APIs don't give complete information on Kotlin types. Consider using" +
-    //     " the kotlinpoet-metadata APIs instead.",
-    // )
-    // @JvmStatic
-    // public fun parametersOf(method: JvmExecutableElement): List<ParameterSpec> =
-    //   method.parameters.map(::get)
+    @DelicateKotlinPoetApi(
+      message = "Element APIs don't give complete information on Kotlin types. Consider using" +
+        " the kotlinpoet-metadata APIs instead.",
+    )
+    @JvmStatic
+    public fun parametersOf(method: JvmExecutableElement): List<ParameterSpec> =
+      doParametersOf(method)
 
     @JvmStatic public fun builder(
       name: String,
@@ -186,9 +184,8 @@ public class ParameterSpec private constructor(
       return Builder(name, type).addModifiers(*modifiers)
     }
 
-    // TODO Jvm Type
-    // @JvmStatic public fun builder(name: String, type: Type, vararg modifiers: KModifier): Builder =
-    //   builder(name, type.asTypeName(), *modifiers)
+    @JvmStatic public fun builder(name: String, type: JvmType, vararg modifiers: KModifier): Builder =
+      builder(name, type.asTypeName(), *modifiers)
 
     @JvmStatic public fun builder(
       name: String,
@@ -204,12 +201,11 @@ public class ParameterSpec private constructor(
       return Builder(name, type).addModifiers(modifiers)
     }
 
-    // TODO Jvm Type
-    // @JvmStatic public fun builder(
-    //   name: String,
-    //   type: Type,
-    //   modifiers: Iterable<KModifier>,
-    // ): Builder = builder(name, type.asTypeName(), modifiers)
+    @JvmStatic public fun builder(
+      name: String,
+      type: JvmType,
+      modifiers: Iterable<KModifier>,
+    ): Builder = builder(name, type.asTypeName(), modifiers)
 
     @JvmStatic public fun builder(
       name: String,
@@ -219,8 +215,7 @@ public class ParameterSpec private constructor(
 
     @JvmStatic public fun unnamed(type: KClass<*>): ParameterSpec = unnamed(type.asTypeName())
 
-    // TODO Jvm Type
-    // @JvmStatic public fun unnamed(type: Type): ParameterSpec = unnamed(type.asTypeName())
+    @JvmStatic public fun unnamed(type: JvmType): ParameterSpec = unnamed(type.asTypeName())
 
     @JvmStatic public fun unnamed(type: TypeName): ParameterSpec = Builder("", type).build()
   }
@@ -258,3 +253,7 @@ internal fun List<ParameterSpec>.emit(
   }
   emit(")")
 }
+
+internal expect fun doParametersOf(method: JvmExecutableElement): List<ParameterSpec>
+
+internal expect fun doGet(element: JvmVariableElement): ParameterSpec

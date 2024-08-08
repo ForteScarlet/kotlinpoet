@@ -2,9 +2,9 @@ package com.squareup.kotlinpoet.jvm
 
 
 internal actual fun Char.isJavaIdentifierStart(): Boolean =
-    // TODO Impl check Java identifier start in JS (or in common?)
+    // TODO How check Java identifier start?
     false
 
 internal actual fun Char.isJavaIdentifierPart(): Boolean =
-    // TODO Impl check Java identifier start in JS (or in common?)
+    // TODO How check Java identifier part?
     false

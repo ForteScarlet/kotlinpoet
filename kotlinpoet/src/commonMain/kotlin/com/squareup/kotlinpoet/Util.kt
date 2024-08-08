@@ -380,8 +380,6 @@ internal expect fun <T : Comparable<T>> Sequence<T>.toSortedSet(): Set<T>
 internal expect fun <T : Comparable<T>> List<T>.toSortedSet(): Set<T>
 internal expect fun <T : Comparable<T>> sortedSetOf(): MutableSet<T>
 
-
 internal expect inline fun <reified E : Enum<E>> enumSetOf(vararg values: E): MutableSet<E>
-
 
 internal expect fun KClass<*>.enclosingClass(): KClass<*>?

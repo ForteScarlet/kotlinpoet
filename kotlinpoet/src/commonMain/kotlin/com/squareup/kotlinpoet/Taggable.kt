@@ -15,13 +15,14 @@
  */
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmClass
-import com.squareup.kotlinpoet.jvm.kotlin
+import com.squareup.kotlinpoet.jvm.JvmDefaultWithCompatibility
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.kotlin
 import kotlin.jvm.JvmInline
 import kotlin.reflect.KClass
 
 /** A type that can be tagged with extra metadata of the user's choice. */
-// TODO @JvmDefaultWithCompatibility
+@JvmDefaultWithCompatibility
 public interface Taggable {
 
   /** Returns all tags. */
@@ -37,7 +38,7 @@ public interface Taggable {
   }
 
   /** The builder analogue to [Taggable] types. */
-  // TODO @JvmDefaultWithCompatibility
+  @JvmDefaultWithCompatibility
   public interface Builder<out T : Builder<T>> {
 
     /** Mutable map of the current tags this builder contains. */

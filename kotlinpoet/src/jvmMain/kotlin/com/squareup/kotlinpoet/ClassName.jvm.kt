@@ -1,6 +1,10 @@
+@file:JvmName("ClassNames")
+@file:JvmMultifileClass
+
 package com.squareup.kotlinpoet
 
-import com.squareup.kotlinpoet.jvm.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmClass
+import com.squareup.kotlinpoet.jvm.alias.JvmTypeElement
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.NestingKind.MEMBER
@@ -9,6 +13,7 @@ import javax.lang.model.element.PackageElement
 import javax.lang.model.element.TypeElement
 import kotlin.collections.plusAssign
 import kotlin.collections.reverse
+import kotlin.reflect.KClass
 import kotlin.text.substring
 
 @DelicateKotlinPoetApi(
@@ -40,7 +45,7 @@ public actual fun JvmClass<*>.asClassName(): ClassName {
     " the kotlinpoet-metadata APIs instead."
 )
 @JvmName("get")
-public fun TypeElement.asClassName(): ClassName {
+public actual fun JvmTypeElement.asClassName(): ClassName {
   fun isClassOrInterface(e: Element) = e.kind.isClass || e.kind.isInterface
 
   fun getPackage(type: Element): PackageElement {
@@ -65,3 +70,10 @@ public fun TypeElement.asClassName(): ClassName {
   names.reverse()
   return ClassName(names)
 }
+
+internal actual fun KClass<*>.qualifiedNameInternal(): String? =
+  qualifiedName
+
+
+internal actual fun Enum<*>.declaringClassName(): ClassName =
+  this.declaringJavaClass.asClassName()
