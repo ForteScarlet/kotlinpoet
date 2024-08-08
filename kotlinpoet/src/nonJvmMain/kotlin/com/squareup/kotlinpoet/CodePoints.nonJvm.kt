@@ -31,3 +31,15 @@ internal actual fun StringBuilder.appendCodePoint(codePoint: CodePoint): StringB
   }
   return this
 }
+
+internal actual fun CodePoint.isJavaIdentifierStart(): Boolean {
+  // TODO How check Java identifier start?
+
+  return true
+}
+
+internal actual fun CodePoint.isJavaIdentifierPart(): Boolean {
+  // TODO How check Java identifier part?
+
+  return true
+}
