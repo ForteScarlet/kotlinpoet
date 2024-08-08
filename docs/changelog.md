@@ -4,6 +4,7 @@ Change Log
 ## Unreleased
 
 * Fix: Enum classes that only have an init block now also generate the required semicolon (#1952)
+* New: Make the kotlinpoet module multi-platform and add source set configuration for the JS and wasmJs platforms. (#TODO)
 
 ## Version 1.18.1
 
