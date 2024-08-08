@@ -17,5 +17,4 @@ package com.squareup.kotlinpoet.jvm.alias
 
 import javax.lang.model.util.Types
 
-
 public actual typealias JvmTypes = Types
