@@ -18,6 +18,26 @@ package com.squareup.kotlinpoet
 import kotlin.reflect.KClass
 import kotlin.sequences.toCollection
 
+internal actual fun formatIsoControlCode(code: Int): String {
+  return buildString(6) {
+    append("\\u")
+    appendFormat04x(code)
+  }
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+internal fun Appendable.appendFormat04x(code: Int) {
+  val hex = code.toHexString(HexFormatWithoutLeadingZeros)
+  if (hex.length < 4) {
+    repeat(4 - hex.length) { append('0') }
+  }
+  append(hex)
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+internal actual fun Int.toHexStr(): String =
+  toHexString(HexFormatWithoutLeadingZeros)
+
 internal actual fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> =
   toMap()
 

@@ -22,6 +22,12 @@ import kotlin.collections.toSortedSet as toSortedSetKt
 import kotlin.reflect.KClass
 import kotlin.sequences.toSortedSet as toSortedSetKt
 
+internal actual fun formatIsoControlCode(code: Int): String =
+  String.format("\\u%04x", code)
+
+internal actual fun Int.toHexStr(): String =
+  Integer.toHexString(this)
+
 internal actual fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> =
   Collections.unmodifiableMap(LinkedHashMap(this))
 

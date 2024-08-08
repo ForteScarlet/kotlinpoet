@@ -62,29 +62,20 @@ internal fun characterLiteralWithoutSingleQuotes(c: Char) = when {
   c == '\"' -> "\"" // \u0022: double quote (")
   c == '\'' -> "\\'" // \u0027: single quote (')
   c == '\\' -> "\\\\" // \u005c: backslash (\)
-  // c.isIsoControl -> String.format("\\u%04x", c.code)
-  c.isIsoControl -> buildString(6) {
-    append("\\u")
-    appendFormat04x(c.code)
-  }
+  c.isIsoControl -> formatIsoControlCode(c.code)
   else -> c.toString()
 }
 
+internal expect fun formatIsoControlCode(code: Int): String
+
 @ExperimentalStdlibApi
-private val HexFormatWithoutLeadingZeros = HexFormat {
+internal val HexFormatWithoutLeadingZeros = HexFormat {
   number {
     removeLeadingZeros = true
   }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
-internal fun Appendable.appendFormat04x(code: Int) {
-  val hex = code.toHexString(HexFormatWithoutLeadingZeros)
-  if (hex.length < 4) {
-    repeat(4 - hex.length) { append('0') }
-  }
-  append(hex)
-}
+internal expect fun Int.toHexStr(): String
 
 internal fun escapeCharacterLiterals(s: String) = buildString {
   for (c in s) append(characterLiteralWithoutSingleQuotes(c))
@@ -351,7 +342,7 @@ internal fun String.escapeAsAlias(validate: Boolean = true): String {
     }
 
     if (!ch.isJavaIdentifierPart()) {
-      newAlias.append("_U").append(ch.code.toHexString(HexFormatWithoutLeadingZeros).padStart(4, '0'))
+      newAlias.append("_U").append(ch.code.toHexStr().padStart(4, '0'))
       continue
     }
 

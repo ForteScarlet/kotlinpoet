@@ -22,11 +22,17 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
+/**
+ * An expected typealias for `java.lang.reflect.Type`.
+ *
+ * @author ForteScarlet
+ */
 public expect interface JvmType
 
 public expect fun JvmType.typeName(): String
 
 /**
+ * An expected typealias for `java.lang.Class`.
  *
  * @author ForteScarlet
  */

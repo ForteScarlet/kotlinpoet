@@ -16,6 +16,7 @@
 package com.squareup.kotlinpoet.jvm.alias
 
 /**
+ * An expected typealias for `java.io.File`.
  *
  * @author ForteScarlet
  */

@@ -16,24 +16,28 @@
 package com.squareup.kotlinpoet.jvm.alias
 
 /**
+ * An expected typealias for `javax.lang.model.element.Element`.
  *
  * @author ForteScarlet
  */
 public expect interface JvmElement
 
 /**
+ * An expected typealias for `javax.lang.model.element.TypeElement`.
  *
  * @author ForteScarlet
  */
 public expect interface JvmTypeElement : JvmElement
 
 /**
+ * An expected typealias for `javax.lang.model.element.ExecutableElement`.
  *
  * @author ForteScarlet
  */
 public expect interface JvmExecutableElement : JvmElement
 
 /**
+ * An expected typealias for `javax.lang.model.element.VariableElement`.
  *
  * @author ForteScarlet
  */

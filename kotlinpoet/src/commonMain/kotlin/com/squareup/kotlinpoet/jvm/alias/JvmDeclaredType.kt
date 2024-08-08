@@ -16,6 +16,7 @@
 package com.squareup.kotlinpoet.jvm.alias
 
 /**
+ * An expected typealias for `javax.lang.model.type.DeclaredType`.
  *
  * @author ForteScarlet
  */
