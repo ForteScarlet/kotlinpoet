@@ -15,7 +15,8 @@
  */
 @file:JvmName("TypeNames")
 // @file:JvmMultifileClass
-// 👆 JvmField cannot be applied to top level property of a file annotated with JvmMultifileClass
+// Can't use JvmMultifileClass because of
+// err: JvmField can't be applied to top level property of a file annotated with JvmMultifileClass
 
 package com.squareup.kotlinpoet
 
