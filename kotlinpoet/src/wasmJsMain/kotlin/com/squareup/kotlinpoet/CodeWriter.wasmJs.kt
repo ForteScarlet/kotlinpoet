@@ -15,4 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
+// internal actual fun initNoPackage(): String = emptyArrayAsEmptyString()
 internal actual fun initNoPackage(): String = ""
+
+private fun emptyArrayAsEmptyString(): String = js("[]")

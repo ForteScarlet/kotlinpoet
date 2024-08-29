@@ -16,6 +16,8 @@
 package com.squareup.kotlinpoet
 
 import com.squareup.kotlinpoet.CodeBlock.Companion.isPlaceholder
+import kotlin.js.JsFileName
+import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 internal object NullAppendable : Appendable {
@@ -376,6 +378,7 @@ private fun String.escapeIfNotJavaIdentifier(): String {
   }
 }
 
+// TODO PatternSyntaxException: No such character class if not `inline`
 internal fun String.escapeSegmentsIfNecessary(delimiter: Char = '.') = split(delimiter)
   .filter { it.isNotEmpty() }
   .joinToString(delimiter.toString()) { it.escapeIfNecessary() }

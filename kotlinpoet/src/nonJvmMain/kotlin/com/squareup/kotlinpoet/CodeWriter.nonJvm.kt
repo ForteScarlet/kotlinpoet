@@ -15,4 +15,4 @@
  */
 package com.squareup.kotlinpoet
 
-internal actual fun initNoPackage(): String = js("[]").unsafeCast<String>()
+// internal actual fun initNoPackage(): String = String()

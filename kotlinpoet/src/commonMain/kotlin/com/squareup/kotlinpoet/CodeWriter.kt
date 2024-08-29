@@ -15,6 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
+import kotlin.jvm.JvmInline
 import kotlin.math.min
 
 internal expect fun initNoPackage(): String

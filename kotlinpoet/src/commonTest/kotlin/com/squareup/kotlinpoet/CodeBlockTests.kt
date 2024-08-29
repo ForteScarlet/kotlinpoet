@@ -20,8 +20,11 @@ import kotlin.jvm.JvmInline
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @JvmInline
@@ -42,6 +45,23 @@ class CodeBlockTests {
     b = CodeBlock.builder().add("%L", "taco").build()
     assertEquals(a, b)
     assertEquals(b.hashCode(), a.hashCode())
+  }
+
+  @Test fun initPackageEquals() {
+    // TODO
+    val np = initNoPackage()
+    // assertNotSame("", initNoPackage())
+    // assertSame(np, np)
+    // assertEquals("", np)
+    println("np: $np")
+    // println(ClassName(initNoPackage(), "Hello"))
+    val className = ClassName("", "Hello")
+    println("create className")
+    println("create className: $className")
+    // assertEquals(
+    //   ClassName(initNoPackage(), "Hello"),
+    //   ClassName("", "Hello"),
+    // )
   }
 
   @Test fun of() {
