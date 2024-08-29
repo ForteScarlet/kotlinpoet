@@ -46,7 +46,13 @@ internal fun requireNoneOf(modifiers: Set<KModifier>, vararg forbidden: KModifie
   }
 }
 
-internal fun <T> T.isOneOf(t1: T, t2: T, t3: T? = null, t4: T? = null, t5: T? = null, t6: T? = null) =
+// 如果不使用 inline,
+// 那么在 CodeBlock.builder().build() 中使用 Char.isSingleCharNoArgPlaceholder 的时候
+// 会在**首次调用**时抛出
+// PatternSyntaxException: No such character class
+// 但出现此问题的原因未知，目前还没有尝试成功以最小单位复现，
+// 但是此inline的方式似乎可以解决此问题。
+internal inline fun <reified T> T.isOneOf(t1: T, t2: T, t3: T? = null, t4: T? = null, t5: T? = null, t6: T? = null) =
   this == t1 || this == t2 || this == t3 || this == t4 || this == t5 || this == t6
 
 internal fun <T> Collection<T>.containsAnyOf(vararg t: T) = t.any(this::contains)
