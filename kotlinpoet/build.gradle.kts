@@ -40,13 +40,7 @@ kotlin {
   }
 
   js {
-    browser {
-      testTask {
-        useKarma {
-          useChromeHeadless()
-        }
-      }
-    }
+    browser()
     nodejs {
       testTask {
         useMocha()
@@ -58,13 +52,7 @@ kotlin {
 
   @OptIn(ExperimentalWasmDsl::class)
   wasmJs {
-    browser {
-      testTask {
-        useKarma {
-          useChromeHeadless()
-        }
-      }
-    }
+    browser()
     nodejs {
       testTask {
         useMocha()
