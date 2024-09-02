@@ -40,7 +40,6 @@ kotlin {
   }
 
   js {
-    browser()
     nodejs {
       testTask {
         useMocha()
@@ -52,7 +51,6 @@ kotlin {
 
   @OptIn(ExperimentalWasmDsl::class)
   wasmJs {
-    browser()
     nodejs {
       testTask {
         useMocha()

@@ -291,11 +291,18 @@ private const val ALLOWED_CHARACTER = '$'
 
 private const val UNDERSCORE_CHARACTER = '_'
 
+// TODO 'PatternSyntaxException: No such character class'
 internal val String.isKeyword get() = this in KEYWORDS
 
-internal val String.hasAllowedCharacters get() = this.any { it == ALLOWED_CHARACTER }
+internal fun isKeyword0(v: String): Boolean {
+  println("isKeyword0")
+  println("isKeyword0: $v")
+  return v in KEYWORDS
+}
 
-internal val String.allCharactersAreUnderscore get() = this.all { it == UNDERSCORE_CHARACTER }
+internal inline val String.hasAllowedCharacters get() = this.any { it == ALLOWED_CHARACTER }
+
+internal inline val String.allCharactersAreUnderscore get() = this.all { it == UNDERSCORE_CHARACTER }
 
 // https://github.com/JetBrains/kotlin/blob/master/compiler/frontend.java/src/org/jetbrains/kotlin/resolve/jvm/checkers/JvmSimpleNameBacktickChecker.kt
 private val ILLEGAL_CHARACTERS_TO_ESCAPE = setOf('.', ';', '[', ']', '/', '<', '>', ':', '\\')
@@ -307,12 +314,31 @@ private fun String.failIfEscapeInvalid() {
   }
 }
 
-internal fun String.escapeIfNecessary(validate: Boolean = true): String = escapeIfNotJavaIdentifier()
-  .escapeIfKeyword()
-  .escapeIfHasAllowedCharacters()
-  .escapeIfAllCharactersAreUnderscore()
-  .apply { if (validate) failIfEscapeInvalid() }
-
+// TODO 'PatternSyntaxException: No such character class' if without `inline`
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun String.escapeIfNecessary(validate: Boolean = true): String {
+  return escapeIfNotJavaIdentifier()
+    .also {
+    println("A: escapeIfNotJavaIdentifier")
+    println("A: escapeIfNotJavaIdentifier: $it")
+  }
+    .escapeIfKeyword()
+    .also {
+      println("A: escapeIfKeyword")
+      println("A: escapeIfKeyword: $it")
+    }
+    .escapeIfHasAllowedCharacters()
+    .also {
+      println("A: escapeIfHasAllowedCharacters")
+      println("A: escapeIfHasAllowedCharacters: $it")
+    }
+    .escapeIfAllCharactersAreUnderscore()
+    .also {
+      println("A: escapeIfAllCharactersAreUnderscore")
+      println("A: escapeIfAllCharactersAreUnderscore: $it")
+    }
+    .apply { if (validate) failIfEscapeInvalid() }
+}
 /**
  * Because of [KT-18706](https://youtrack.jetbrains.com/issue/KT-18706)
  * bug all aliases escaped with backticks are not resolved.
@@ -357,15 +383,21 @@ internal fun String.escapeAsAlias(validate: Boolean = true): String {
   return newAlias.toString().apply { if (validate) failIfEscapeInvalid() }
 }
 
-private fun String.alreadyEscaped() = startsWith("`") && endsWith("`")
+// TODO 'PatternSyntaxException: No such character class' if without `inline`
+@Suppress("NOTHING_TO_INLINE")
+private inline fun String.alreadyEscaped() = startsWith("`") && endsWith("`")
 
-private fun String.escapeIfKeyword() = if (isKeyword && !alreadyEscaped()) "`$this`" else this
+// TODO 'PatternSyntaxException: No such character class' if without `inline`
+@Suppress("NOTHING_TO_INLINE")
+private inline fun String.escapeIfKeyword() = if (isKeyword && !alreadyEscaped().also { println("alreadyEscaped: $it") }) "`$this`" else this
 
 private fun String.escapeIfHasAllowedCharacters() = if (hasAllowedCharacters && !alreadyEscaped()) "`$this`" else this
 
 private fun String.escapeIfAllCharactersAreUnderscore() = if (allCharactersAreUnderscore && !alreadyEscaped()) "`$this`" else this
 
-private fun String.escapeIfNotJavaIdentifier(): String {
+// TODO 'PatternSyntaxException: No such character class' if without `inline`
+@Suppress("NOTHING_TO_INLINE")
+private inline fun String.escapeIfNotJavaIdentifier(): String {
   return if ((
       !first().isJavaIdentifierStart() ||
         drop(1).any { !it.isJavaIdentifierPart() }
@@ -378,8 +410,9 @@ private fun String.escapeIfNotJavaIdentifier(): String {
   }
 }
 
-// TODO PatternSyntaxException: No such character class if not `inline`
-internal fun String.escapeSegmentsIfNecessary(delimiter: Char = '.') = split(delimiter)
+// TODO 'PatternSyntaxException: No such character class' if without `inline`
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun CharSequence.escapeSegmentsIfNecessary(delimiter: Char = '.'): String = split(delimiter)
   .filter { it.isNotEmpty() }
   .joinToString(delimiter.toString()) { it.escapeIfNecessary() }
 

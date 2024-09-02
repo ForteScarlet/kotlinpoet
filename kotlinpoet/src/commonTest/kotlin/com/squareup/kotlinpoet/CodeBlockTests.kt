@@ -53,11 +53,9 @@ class CodeBlockTests {
     // assertNotSame("", initNoPackage())
     // assertSame(np, np)
     // assertEquals("", np)
-    println("np: $np")
-    // println(ClassName(initNoPackage(), "Hello"))
     val className = ClassName("", "Hello")
     println("create className")
-    println("create className: $className")
+    println("create className: ${className.toString()}")
     // assertEquals(
     //   ClassName(initNoPackage(), "Hello"),
     //   ClassName("", "Hello"),

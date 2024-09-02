@@ -186,7 +186,9 @@ public class ClassName internal constructor(
   override fun compareTo(other: ClassName): Int = COMPARATOR.compare(this, other)
 
   override fun emit(out: CodeWriter) =
-    out.emit(out.lookupName(this).escapeSegmentsIfNecessary())
+    out.emit(
+      out.lookupName(this).escapeSegmentsIfNecessary(),
+    )
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
