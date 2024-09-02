@@ -20,7 +20,7 @@ import kotlin.test.Test
 
 class CodeBlockTests {
   @Test
-  fun initPackageEquals() {
+  fun classNameTest() {
     ClassName("a.b.c", "Hello").toString()
   }
 }
