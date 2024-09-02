@@ -16,8 +16,6 @@
 package com.squareup.kotlinpoet
 
 import com.squareup.kotlinpoet.CodeBlock.Companion.isPlaceholder
-import kotlin.js.JsFileName
-import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 internal object NullAppendable : Appendable {
@@ -54,7 +52,7 @@ internal fun requireNoneOf(modifiers: Set<KModifier>, vararg forbidden: KModifie
 // PatternSyntaxException: No such character class
 // 但出现此问题的原因未知，目前还没有尝试成功以最小单位复现，
 // 但是此inline的方式似乎可以解决此问题。
-internal inline fun <reified T> T.isOneOf(t1: T, t2: T, t3: T? = null, t4: T? = null, t5: T? = null, t6: T? = null) =
+internal fun <T> T.isOneOf(t1: T, t2: T, t3: T? = null, t4: T? = null, t5: T? = null, t6: T? = null) =
   this == t1 || this == t2 || this == t3 || this == t4 || this == t5 || this == t6
 
 internal fun <T> Collection<T>.containsAnyOf(vararg t: T) = t.any(this::contains)
@@ -181,10 +179,27 @@ internal fun CodeBlock.trimTrailingNewLine(replaceWith: Char? = null) = if (isEm
   }
 }
 
-// TODO Will be crashed in wasm-js :(
+// // TODO Will be crashed in wasm-js :(
+// //  -> PatternSyntaxException: No such character class
+// //  It works in JS and JVM
+// internal val IDENTIFIER_REGEX =
+//   (
+//     "((\\p{gc=Lu}+|\\p{gc=Ll}+|\\p{gc=Lt}+|\\p{gc=Lm}+|\\p{gc=Lo}+|\\p{gc=Nl}+)+" +
+//       "\\d*" +
+//       "\\p{gc=Lu}*\\p{gc=Ll}*\\p{gc=Lt}*\\p{gc=Lm}*\\p{gc=Lo}*\\p{gc=Nl}*)" +
+//       "|" +
+//       "(`[^\n\r`]+`)"
+//     )
+//     .toRegex()
+
+// TODO Will crash if used `IDENTIFIER_REGEX_VALUE.toRegex()` directly in WasmJs :(
 //  -> PatternSyntaxException: No such character class
-//  It works in JS and JVM
-private val IDENTIFIER_REGEX =
+//  It works in JS and JVM.
+//  So I tried:
+//  Keep the use of Regex in JVM and JS
+//  and use RegExp directly in WasmJs for matching,
+//  using it in a similar way as in JS.
+internal const val IDENTIFIER_REGEX_VALUE =
   (
     "((\\p{gc=Lu}+|\\p{gc=Ll}+|\\p{gc=Lt}+|\\p{gc=Lm}+|\\p{gc=Lo}+|\\p{gc=Nl}+)+" +
       "\\d*" +
@@ -192,9 +207,8 @@ private val IDENTIFIER_REGEX =
       "|" +
       "(`[^\n\r`]+`)"
     )
-    .toRegex()
 
-internal val String.isIdentifier get() = IDENTIFIER_REGEX.matches(this)
+internal expect val String.isIdentifier: Boolean
 
 // https://kotlinlang.org/docs/reference/keyword-reference.html
 internal val KEYWORDS = setOf(
@@ -291,18 +305,11 @@ private const val ALLOWED_CHARACTER = '$'
 
 private const val UNDERSCORE_CHARACTER = '_'
 
-// TODO 'PatternSyntaxException: No such character class'
 internal val String.isKeyword get() = this in KEYWORDS
 
-internal fun isKeyword0(v: String): Boolean {
-  println("isKeyword0")
-  println("isKeyword0: $v")
-  return v in KEYWORDS
-}
+internal val String.hasAllowedCharacters get() = this.any { it == ALLOWED_CHARACTER }
 
-internal inline val String.hasAllowedCharacters get() = this.any { it == ALLOWED_CHARACTER }
-
-internal inline val String.allCharactersAreUnderscore get() = this.all { it == UNDERSCORE_CHARACTER }
+internal val String.allCharactersAreUnderscore get() = this.all { it == UNDERSCORE_CHARACTER }
 
 // https://github.com/JetBrains/kotlin/blob/master/compiler/frontend.java/src/org/jetbrains/kotlin/resolve/jvm/checkers/JvmSimpleNameBacktickChecker.kt
 private val ILLEGAL_CHARACTERS_TO_ESCAPE = setOf('.', ';', '[', ']', '/', '<', '>', ':', '\\')
@@ -314,13 +321,10 @@ private fun String.failIfEscapeInvalid() {
   }
 }
 
-// TODO 'PatternSyntaxException: No such character class' if without `inline`
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun String.escapeIfNecessary(validate: Boolean = true): String {
+internal fun String.escapeIfNecessary(validate: Boolean = true): String {
   return escapeIfNotJavaIdentifier()
     .escapeIfKeyword()
     .escapeIfHasAllowedCharacters()
-    .escapeIfAllCharactersAreUnderscore()
     .apply { if (validate) failIfEscapeInvalid() }
 }
 /**
@@ -367,21 +371,15 @@ internal fun String.escapeAsAlias(validate: Boolean = true): String {
   return newAlias.toString().apply { if (validate) failIfEscapeInvalid() }
 }
 
-// TODO 'PatternSyntaxException: No such character class' if without `inline`
-@Suppress("NOTHING_TO_INLINE")
-private inline fun String.alreadyEscaped() = startsWith("`") && endsWith("`")
+private fun String.alreadyEscaped() = startsWith("`") && endsWith("`")
 
-// TODO 'PatternSyntaxException: No such character class' if without `inline`
-@Suppress("NOTHING_TO_INLINE")
-private inline fun String.escapeIfKeyword() = if (isKeyword && !alreadyEscaped().also { println("alreadyEscaped: $it") }) "`$this`" else this
+private fun String.escapeIfKeyword() = if (isKeyword && !alreadyEscaped().also { println("alreadyEscaped: $it") }) "`$this`" else this
 
 private fun String.escapeIfHasAllowedCharacters() = if (hasAllowedCharacters && !alreadyEscaped()) "`$this`" else this
 
 private fun String.escapeIfAllCharactersAreUnderscore() = if (allCharactersAreUnderscore && !alreadyEscaped()) "`$this`" else this
 
-// TODO 'PatternSyntaxException: No such character class' if without `inline`
-@Suppress("NOTHING_TO_INLINE")
-private inline fun String.escapeIfNotJavaIdentifier(): String {
+private fun String.escapeIfNotJavaIdentifier(): String {
   return if ((
       !first().isJavaIdentifierStart() ||
         drop(1).any { !it.isJavaIdentifierPart() }
@@ -394,9 +392,7 @@ private inline fun String.escapeIfNotJavaIdentifier(): String {
   }
 }
 
-// TODO 'PatternSyntaxException: No such character class' if without `inline`
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun CharSequence.escapeSegmentsIfNecessary(delimiter: Char = '.'): String = split(delimiter)
+internal fun CharSequence.escapeSegmentsIfNecessary(delimiter: Char = '.'): String = split(delimiter)
   .filter { it.isNotEmpty() }
   .joinToString(delimiter.toString()) { it.escapeIfNecessary() }
 

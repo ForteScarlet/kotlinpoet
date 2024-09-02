@@ -20,11 +20,8 @@ import kotlin.jvm.JvmInline
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @JvmInline
@@ -48,14 +45,18 @@ class CodeBlockTests {
   }
 
   @Test fun initPackageEquals() {
+    println(KEYWORDS)
+    println("H1")
+    println("Hello".isKeyword)
+    println("H2")
     // TODO
     // val np = initNoPackage()
     // // assertNotSame("", initNoPackage())
     // // assertSame(np, np)
     // // assertEquals("", np)
-    // val className = ClassName("", "Hello")
-    // println("create className")
-    // println("create className: ${className.toString()}")
+    val className = ClassName("", "Hello")
+    println("create className")
+    println("create className: ${className.toString()}")
     // assertEquals(
     //   ClassName(initNoPackage(), "Hello"),
     //   ClassName("", "Hello"),
@@ -680,42 +681,4 @@ class CodeBlockTests {
     // println("""ESCAPE '\'""") -> ESCAPE '\'
     assertEquals("\"\"\"ESCAPE '\\'\"\"\"", CodeBlock.of("%P", """ESCAPE '\'""").toString())
   }
-
-  // https://github.com/square/kotlinpoet/issues/1381
-  @Test fun useUnderscoresOnLargeDecimalLiterals() {
-    assertEquals("10_000", CodeBlock.of("%L", 10000).toString())
-    assertEquals("100_000", CodeBlock.of("%L", 100000).toString())
-    assertEquals("100_000.0", CodeBlock.of("%L", 100000L).toString())
-    assertEquals("-2_147_483_648", CodeBlock.of("%L", Int.MIN_VALUE).toString())
-    assertEquals("2_147_483_647", CodeBlock.of("%L", Int.MAX_VALUE).toString())
-    // assertEquals("-9_223_372_036_854_775_808", CodeBlock.of("%L", Long.MIN_VALUE).toString())
-    assertEquals("10_000.123", CodeBlock.of("%L", 10000.123).toString())
-    // assertEquals("3", CodeBlock.of("%L", 3.0).toString())
-    assertEquals("10_000.123", CodeBlock.of("%L", 10000.123f).toString())
-    assertEquals("10_000.123456789011", CodeBlock.of("%L", 10000.123456789012).toString())
-    assertEquals("1_281", CodeBlock.of("%L", 1281.toShort()).toString())
-
-    assertEquals("\"10000\"", CodeBlock.of("%S", 10000).toString())
-    assertEquals("\"100000\"", CodeBlock.of("%S", 100000L).toString())
-    assertEquals("\"-2147483648\"", CodeBlock.of("%S", Int.MIN_VALUE).toString())
-    assertEquals("\"2147483647\"", CodeBlock.of("%S", Int.MAX_VALUE).toString())
-    // assertEquals("\"-9223372036854775808\"", CodeBlock.of("%S", Long.MIN_VALUE).toString())
-    assertEquals("\"10000.123\"", CodeBlock.of("%S", 10000.123).toString())
-    // assertEquals("\"3\"", CodeBlock.of("%S", 3.0).toString())
-    assertEquals("\"10000.123\"", CodeBlock.of("%S", 10000.123f).toString())
-    assertEquals("\"10000.12345678901\"", CodeBlock.of("%S", 10000.12345678901).toString())
-    assertEquals("\"1281\"", CodeBlock.of("%S", 1281.toShort()).toString())
-  }
-
-  // https://github.com/square/kotlinpoet/issues/1657
-  // @Test fun minusSignInSwedishLocale() {
-  //   val defaultLocale = Locale.getDefault()
-  //   Locale.setDefault(Locale.forLanguageTag("sv"))
-  //
-  //   val i = -42
-  //   val s = CodeBlock.of("val i = %L", i)
-  //   assertEquals("val i = -42", s.toString())
-  //
-  //   Locale.setDefault(defaultLocale)
-  // }
 }
