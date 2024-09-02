@@ -17,11 +17,6 @@ package com.squareup.kotlinpoet
 
 import kotlin.reflect.KClass
 
-internal actual fun formatNumericValue(o: Number): Any? {
-  // TODO Format numeric value in non-JVM platform
-  return o.toString()
-}
-
 internal actual inline fun argToType(
   o: Any?,
   logDeprecationWarning: (Any) -> Unit,

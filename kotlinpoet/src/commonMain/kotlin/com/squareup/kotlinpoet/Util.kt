@@ -318,25 +318,9 @@ private fun String.failIfEscapeInvalid() {
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun String.escapeIfNecessary(validate: Boolean = true): String {
   return escapeIfNotJavaIdentifier()
-    .also {
-    println("A: escapeIfNotJavaIdentifier")
-    println("A: escapeIfNotJavaIdentifier: $it")
-  }
     .escapeIfKeyword()
-    .also {
-      println("A: escapeIfKeyword")
-      println("A: escapeIfKeyword: $it")
-    }
     .escapeIfHasAllowedCharacters()
-    .also {
-      println("A: escapeIfHasAllowedCharacters")
-      println("A: escapeIfHasAllowedCharacters: $it")
-    }
     .escapeIfAllCharactersAreUnderscore()
-    .also {
-      println("A: escapeIfAllCharactersAreUnderscore")
-      println("A: escapeIfAllCharactersAreUnderscore: $it")
-    }
     .apply { if (validate) failIfEscapeInvalid() }
 }
 /**
