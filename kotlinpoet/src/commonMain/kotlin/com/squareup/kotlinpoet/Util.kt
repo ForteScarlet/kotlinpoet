@@ -16,8 +16,6 @@
 package com.squareup.kotlinpoet
 
 import com.squareup.kotlinpoet.CodeBlock.Companion.isPlaceholder
-import kotlin.js.JsFileName
-import kotlin.js.JsName
 import kotlin.reflect.KClass
 
 internal object NullAppendable : Appendable {
@@ -316,29 +314,12 @@ private fun String.failIfEscapeInvalid() {
 
 // TODO 'PatternSyntaxException: No such character class' if without `inline`
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun String.escapeIfNecessary(validate: Boolean = true): String {
-  return escapeIfNotJavaIdentifier()
-    .also {
-    println("A: escapeIfNotJavaIdentifier")
-    println("A: escapeIfNotJavaIdentifier: $it")
-  }
-    .escapeIfKeyword()
-    .also {
-      println("A: escapeIfKeyword")
-      println("A: escapeIfKeyword: $it")
-    }
-    .escapeIfHasAllowedCharacters()
-    .also {
-      println("A: escapeIfHasAllowedCharacters")
-      println("A: escapeIfHasAllowedCharacters: $it")
-    }
-    .escapeIfAllCharactersAreUnderscore()
-    .also {
-      println("A: escapeIfAllCharactersAreUnderscore")
-      println("A: escapeIfAllCharactersAreUnderscore: $it")
-    }
-    .apply { if (validate) failIfEscapeInvalid() }
-}
+internal inline fun String.escapeIfNecessary(validate: Boolean = true) = escapeIfNotJavaIdentifier()
+  .escapeIfKeyword()
+  .escapeIfHasAllowedCharacters()
+  .escapeIfAllCharactersAreUnderscore()
+  .apply { if (validate) failIfEscapeInvalid() }
+
 /**
  * Because of [KT-18706](https://youtrack.jetbrains.com/issue/KT-18706)
  * bug all aliases escaped with backticks are not resolved.
@@ -389,11 +370,13 @@ private inline fun String.alreadyEscaped() = startsWith("`") && endsWith("`")
 
 // TODO 'PatternSyntaxException: No such character class' if without `inline`
 @Suppress("NOTHING_TO_INLINE")
-private inline fun String.escapeIfKeyword() = if (isKeyword && !alreadyEscaped().also { println("alreadyEscaped: $it") }) "`$this`" else this
+private inline fun String.escapeIfKeyword() =
+  if (isKeyword && !alreadyEscaped().also { println("alreadyEscaped: $it") }) "`$this`" else this
 
 private fun String.escapeIfHasAllowedCharacters() = if (hasAllowedCharacters && !alreadyEscaped()) "`$this`" else this
 
-private fun String.escapeIfAllCharactersAreUnderscore() = if (allCharactersAreUnderscore && !alreadyEscaped()) "`$this`" else this
+private fun String.escapeIfAllCharactersAreUnderscore() =
+  if (allCharactersAreUnderscore && !alreadyEscaped()) "`$this`" else this
 
 // TODO 'PatternSyntaxException: No such character class' if without `inline`
 @Suppress("NOTHING_TO_INLINE")
@@ -412,9 +395,15 @@ private inline fun String.escapeIfNotJavaIdentifier(): String {
 
 // TODO 'PatternSyntaxException: No such character class' if without `inline`
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun CharSequence.escapeSegmentsIfNecessary(delimiter: Char = '.'): String = split(delimiter)
-  .filter { it.isNotEmpty() }
-  .joinToString(delimiter.toString()) { it.escapeIfNecessary() }
+internal inline fun String.escapeSegmentsIfNecessary(delimiter: Char = '.'): String {
+  println("CharSequence.escapeSegmentsIfNecessary")
+  println("CharSequence.escapeSegmentsIfNecessary: $this")
+  return split(delimiter)
+    .filter { it.isNotEmpty() }
+    .joinToString(delimiter.toString()) {
+      it.escapeIfNecessary()
+    }
+}
 
 internal expect fun <T : Comparable<T>> Sequence<T>.toSortedSet(): Set<T>
 internal expect fun <T : Comparable<T>> List<T>.toSortedSet(): Set<T>
