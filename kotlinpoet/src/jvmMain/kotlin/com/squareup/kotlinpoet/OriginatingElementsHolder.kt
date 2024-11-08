@@ -15,6 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
+import com.squareup.kotlinpoet.jvm.JvmDefaultWithCompatibility
 import javax.lang.model.element.Element
 
 /** A type that can have originating [elements][Element]. */

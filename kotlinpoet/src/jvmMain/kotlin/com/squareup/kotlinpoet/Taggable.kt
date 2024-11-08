@@ -15,6 +15,7 @@
  */
 package com.squareup.kotlinpoet
 
+import com.squareup.kotlinpoet.jvm.JvmDefaultWithCompatibility
 import kotlin.reflect.KClass
 
 /** A type that can be tagged with extra metadata of the user's choice. */
